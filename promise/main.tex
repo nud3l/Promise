@@ -44,8 +44,8 @@
 \begin{document}
 
 \title{
-%\sys: Leveraging Future Gains for Collateral Reduction
-\sys: Leveraging Future Payments for Bootstrapping Collateralized Protocols
+\sys: Leveraging Future Gains for Collateral Reduction
+% \sys: Leveraging Future Payments for Bootstrapping Collateralized Protocols
 } 
 \author{
 }
@@ -132,8 +132,8 @@ Lastly, we elaborate on applying \sys to several commonly known protocols, inclu
 
 % user pays up to (disc - opp.cost) less: f - (disc - opp.cost)
 
-\rk{The following sentence needs to be rephrased as to not imply that it is somehow impossible to create any protocol without an intermediary.}
-When designing trustless protocols, the introduction of collateral is often necessary due to an impossibility of creating a protocol without an intermediary.
+% \rk{The following sentence needs to be rephrased as to not imply that it is somehow impossible to create any protocol without an intermediary.}
+When designing trustless protocols, the introduction of collateral is often necessary when an intermediary needs to be involved. %due to an impossibility of creating a protocol without an intermediary.
 It allows us to create systems that are resistant against economically rational adversaries by imposing the threat of destroying their money and reinforces their honest behavior.
 Collateral also provides the possibility to reimburse honest users having suffered from malicious actions of the intermediary.
 Similarly, payments are a second requirement that represents a motivation for intermediaries to execute tasks requested by users in a system.
@@ -165,9 +165,12 @@ The intermediary may hence face (i) liquidity problems and (ii) possible financi
 
 \subsubsection{Intuition}
 \sys helps bootstrapping cryptoeconomic protocols that require collateralized intermediaries.
-Instead of requiring the intermediary to lock a high amount of collateral upfront, we require that payments made for successfully completing tasks are held in escrow for a period of time.
-The intermediary can withdraw surplus collateral when the sum of initially locked collateral and accrued payments is above the overall collateral threshold.
+Instead of requiring the intermediary to lock a high amount of collateral upfront, we require that payments made for successfully completing tasks are held in escrow for a period of time determined by a user.
+Thereby, a user can start interacting with an intermediary with a small amount of value at risk and gradually increase the values by forcing the intermediary to use the ongoing payments as additional collateral.
+The intermediary can withdraw surplus collateral when the sum of initially locked collateral and accrued payments is above a user defined overall collateral threshold.
 That way, honest and economically rational agents have a higher net reward for behaving honest compared to locking up the collateral initially.
+Also, users have the possibility to obtain a service guarantee over a defined period of time.
+\dom{Let's try to find a way that compensates the intermediary for that. Maybe payment can be increased.}
 
 Moreover, we allow users to lock future payments in escrow to reduce relative payments.
 To ensure liquidity in the system, a user can lock payments, say for the expected number of tasks for a month, and in return receive a discount on the price for providing the task.
@@ -198,7 +201,7 @@ We conclude in Section~\ref{sec:conclusion}.
 \section{Model}
 \label{sec:model}
 
-\rl{Would it make sense to rename $D_{min}$ to $D_{base}$? Minimum sort of implies that it's already minimized while base can refer to a base value Promise optimizes.}
+\rk{Would it make sense to rename $D_{min}$ to $D_{base}$? Minimum sort of implies that it's already minimized while base can refer to a base value Promise optimizes.}
 
 Assume that we have two agents: Alice, an intermediary, and Bob, a user.
 For a generic service, Alice and Bob agree on a contract that details which task Alice has to provide in a specification $\phi$.
@@ -492,10 +495,33 @@ For Alice not to cheat in a system with \sys in a single-round setting, we requi
 
 \subsection{User protocol part}
 Basic argument:
-if user pays every round $t$ then his net utility is $u = v - p - c$ where $v$ is his private value for getting the service, $p$ the payment he makes and $c$ the cost for doing the payment.
+if user pays every round $t$ then his net utility per round is $u = v - p - c$ where $v$ is his private value for getting the service, $p$ the payment he makes and $c$ the cost for doing the payment.
 Locking multiple payments incurs opportunity cost $\big( \frac{\delta}{1+r} \big)^t \mathrm{E}[rp]$ at every time step $t$.
 The user should lock future payments such that his utility is increased.
-If we make a sequential game of this, the utility is defined by $u = v - p - c + \sum_{t=1}^{\infty} \big( \frac{\delta}{1+r} \big)^t (v - p - c)$ if users sends two tx, or $u = v - p - c + \sum_{t=1}^{\infty} \big( \frac{\delta}{1+r} \big)^t (v - p - \mathrm{E}[rp])$.
+If we make a sequential game of this, the utility is defined by the number of rounds $m$ the user wishes to participate (no pre-payment):
+
+\begin{align}
+\label{eq:utility-user-no-prepay}
+    u &= \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t (v - p - c)
+\end{align}
+
+With pre-payment, we have:
+
+\begin{align}
+\label{eq:utility-user-prepay}
+    u &= v - p - c + \sum_{t=1}^{m} \big( \frac{\delta}{1+r} \big)^t (v - p - \mathrm{E}[rmp])
+\end{align}
+
+If the overall utility to pre-pay is higher, then a user should do so, even if the user does not expect to transfer higher values $v$ in subsequent transactions.
+Hence, we equate Eq. (\ref{eq:utility-user-no-prepay}) and (\ref{eq:utility-user-prepay}) to determine the decision bound.
+
+\begin{align}
+    c = \mathrm{E}[rmp]
+\end{align}
+
+Realistically, $r$ is in between $0$ and $0.05$ reflecting a maximum of a 5\% return in another protocol.
+Plugging in the maximum value for $r$ gives us the following plot.
+
 
 
 
