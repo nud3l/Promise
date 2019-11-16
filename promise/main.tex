@@ -1,8 +1,8 @@
 
 \documentclass[runningheads]{llncs}
-
+\usepackage[utf8]{inputenc}
 %\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
-\usepackage{times}
+% \usepackage{times}
 \usepackage{amsmath}
 
 %\usepackage{amsmath}
@@ -69,7 +69,7 @@ The introduction of collateral, however, carries two disadvantages: (i) requirin
 We present \sys, a mechanism to decrease the initial capital requirements of economically rational service providers in cryptoeconomic protocols.
 \sys leverages future income (e.g. transaction fees) prepaid by users to reduce the collateral actively locked up by service providers, while sustaining secure operation of the protocol.
 We provide a model for evaluating the effectiveness of \sys and argue its security.
-Lastly, we discuss how \sys can be applied to existing second-layer scaling, blockchain interoperability, and decentralized mining protocols.
+% Lastly, we discuss how \sys can be applied to existing second-layer scaling, blockchain interoperability, and decentralized mining protocols.
 %allowing the required collateral to be constituted by future transaction fees by the user, while \emph{sustaining the overall collateral} required as a security deposit.
 %Using \sys, a user can force a service provider to lock payments as future collateral.
 %Further, the user is able to provide multiple future payments in escrow to provide a revenue guarantee to a service provider.
@@ -100,24 +100,27 @@ Lastly, we discuss how \sys can be applied to existing second-layer scaling, blo
 %     \item make sure assumptions are complete
 % \end{itemize}}
 
-Since their nascence, arguably the most significant property of blockchains is their facilitation of trustless exchange between entities with \emph{weak identities}~\footnote{As opposed to strong identities, where the entity is \textit{real-world} identifiable.}.
+Since their nascence, arguably the most significant property of blockchains is their facilitation of trustless exchange between entities with \emph{weak identities}~\cite{rainer}~\footnote{Nodes, with \emph{weak} identities, are able to suddenly leave a network; agents, with \emph{strong} identities, cannot.}.
 Yet the trustless nature of the systems means not only that parties \textit{may} transact without trusting each other, but also that they \textit{should not trust} each other.
 %\footnote{Or at least should not trust each other.}.
 This creates a design challenge for interactions which would typically involve such trust. 
 In this paper, we focus on blockchain protocols which, at least in part, substitute \textit{trust} for \textit{collateral}.
 Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
 %It allows us to create systems that are resistant against economically rational adversaries by imposing the threat of destroying their money and motivating their honest behavior.
-Protocols involving collateral include those for cross-chain communication~\cite{Zamyatin2019XCLAIM}, scalable off-chain payments~\cite{Khalil2019NOCUST}, outsourcing of computation and verification games~\cite{teutsch2017scalable}, state channels~\cite{dziembowski2018general,avarikioti2019brick}, and watchtowers~\cite{poon2016bitcoin,mccorry2018pisa,avarikioti2018towards}.
+Protocols involving collateral include cross-chain communication~\cite{Zamyatin2019XCLAIM}, scalable off-chain payments~\cite{Khalil2019NOCUST}, state channels~\cite{dziembowski2018general}, and watchtowers~\cite{mccorry2018pisa}.
+% avarikioti2019brick avarikioti2018towards
 %, and (decentralized) mining pools.\dom{need citation for smartpool and p2pool}
+% outsourcing of computation and verification games~\cite{teutsch2017scalable}
 
 \noindent\textbf{Problem.}
 Relying on collateral in place of trust is itself associated with a different set of challenges. 
 Collateralization requires the provision of a substantial amount of funds upon protocol initialization, limiting the set of participants to a selected few.
-The concept of equitability in Proof-of-Stake (PoS) protocols explores this phenomenon of the ``rich are getting richer'' in this context~\cite{Fanti2019Compounding}.
-Wealthy agents are able to earn an absolutely larger proportion of the rewards as their likelihood to earn is increased by their amount of collateral.
-In the permissionless setting, protocols with collateral should ideally be egalitarian, i.e. agents are able to earn rewards proportional to their deposits~\cite{Karakostas2019Egalitarianism}.
+Leaving participation to a small set of agents can lead to phenomenos like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
+% The concept of equitability in Proof-of-Stake (PoS) protocols explores this phenomenon of the  in this context.
+% Wealthy agents are able to earn an absolutely larger proportion of the rewards as their likelihood to earn is increased by their amount of collateral.
+% In the permissionless setting, protocols with collateral should ideally be egalitarian, i.e. agents are able to earn rewards proportional to their deposits~\cite{Karakostas2019Egalitarianism}.
 While it is not possible to grant less wealthy agents proportionally higher rewards due to Sybil identities, we can lower the entry barrier for agents to join a protocol.
-Last, locked funds result in opportunity costs for the agent that could use its collateral for participating in other protocols~\cite{Harz2019Balance}.
+Finally, locked funds result in opportunity costs for the agent who could use their collateral for participating in other protocols~\cite{Harz2019Balance}.
 
 % During a bootstrapping phase, the necessary coins for participating in a protocol needs to be distributed ideally to honest agents.
 % However, this is detrimental to the diea of decentralization as 
@@ -125,16 +128,18 @@ Last, locked funds result in opportunity costs for the agent that could use its 
 % In addition, the funds are locked up for the duration of the protocol.
 % \aza{Citations here and a bit more detail?}
 \noindent\textbf{This work.}
-We present \sys, a simple but effective mechanism to lowers entry barriers for intermediaries in protocols relying on collateral for secure operation.
-Instead locking up a significant amount of liquidity as collateral, \sys allows intermediaries to stake their future income, ``promised" for correctly providing the service (i.e., fees), instead.
-Similar to online orders in e-commerce, users are required to pay fees upfront (``forward payments") - in this case for a some pre-agreed service period.
+We present \sys, a simple but effective mechanism to lower entry barriers for intermediaries in protocols relying on collateral for secure operation.
+Instead of locking up a significant amount of funds as collateral, \sys allows intermediaries to stake their future income, ``promised" for correctly providing the service (i.e., fees), instead.
+Similar to online orders in e-commerce, users can choose to pay fees upfront (``forward payments") - for a some pre-agreed service period.
 However, instead of transferring these payments directly to the intermediary, users lock pre-paid fees in a escrow smart contact, preventing theft by either party. 
-The benefit of this scheme is twofold: (i) the intermediary, authorized by the smart contract, can leverage the pre-paid funds as collateral to maintain secure operation, reducing the liquidity necessary to launch such services; (ii) the user, on the other hand, can be incentivized via a lower fee rate.
-As long as the expected future revenue from correct operation exceeds potential gains by the intermediary, and misbehavior can be proved to the smart contract, \sys incentivizes correct behavior.
+The intermediary needs to provide the service honestly for the entire period set by the user.
+The benefit of this scheme is twofold: (i) the intermediary is incentivized to act honestly while enjoying a lower initial collateral, and (ii) the user can reduce his transaction cost and only pays if the service was provided honestly over his defined period. %, authorized by the smart contract, 
+%can leverage the pre-paid funds as collateral to maintain secure operation, reducing the liquidity necessary to launch such services; (ii) the user, on the other hand, can be incentivized via a lower fee rate.
+As long as the expected future revenue from correct operation exceeds potential gains by the intermediary, users have the option to leave the protocol, and misbehavior can be proved to the smart contract, \sys incentivizes correct behavior.
 
 \noindent\textbf{Outline.}
-We introduce the general system model and assumptions in Section~\ref{sec:model}, followed by a description of the \sys protocol in Section~\ref{sec:promise}.
-Next, we discuss the security of \sys in Section~\ref{sec:security} and highlight how \sys can be applied to existing systems in Section~\ref{sec:application}.
+We introduce the system model and assumptions in Section~\ref{sec:model}, followed by a description of  \sys in Section~\ref{sec:promise}.
+Next, we discuss the security of \sys in Section~\ref{sec:security}. % and highlight how \sys can be applied to existing systems in Section~\ref{sec:application}.
 We discuss related work in Section~\ref{sec:related} and conclude in Section~\ref{sec:conclusion}.
 
 %propose that payments made for successfully completing tasks are made in advance and held in escrow for a period of time determined by a user, sharing the burden of the provision of upfront collateral.
@@ -162,28 +167,29 @@ We discuss related work in Section~\ref{sec:related} and conclude in Section~\re
 \section{System Model}
 \label{sec:model}
 
-In \sys, a user Bob engages an intermediary Alice to fulfill a task on his behalf.
+In \sys, a user Bob engages an intermediary Alice to fulfill a task valued at $V_B$ on his behalf.
 % For a generic service, Alice and Bob agree on a contract that details which task Alice has to provide.
-Bob will pay Alice $p$ each period $t$ for fulling the task.
-Given the absence of \textit{strong identities}, the total value of the task needs to be fully collateralized, via a deposit $D$.
-If a particular task involves Alice offering a service and Bob having a \$100 exposure---in the form of counter-party risk---to Alice, Alice will need to post \$100 as collateral to \textit{insure} offset the exposure, such that Bob does not stand to lose funds if Alice behaves maliciously and tries to steal them.
+Bob pays Alice $p$ each period $t$ for performing the task. % for fulling the task.
+Given the absence of \textit{strong identities}, the total value of the task to Bob ($V_B$) needs to be fully collateralized, via a deposit $D$, such that $D \geq V_B$.
+For example, if a particular task involves Alice offering a service and Bob having a \$100 exposure---in the form of counter-party risk---to Alice, Alice will need to post at least \$100 as collateral to \textit{insure} offset the exposure, such that Bob does not stand to lose funds if Alice behaves maliciously. % and tries to steal them.
 
 \subsection{Roles}
 
 \sys adopts the BAR model of rational agents~\cite{aiyer2005bar} including private preferences of agents as proposed in~\cite{Harz2019Balance}.
-Given this model, we define the following roles in \sys.
+We define the following roles.
 
 \begin{itemize}
-    \item \textbf{Alice}, the Intermediary: Alice is an economically rational agent that is entrusted with executing a task in a protocol. She provides a deposit $D$ into the escrow before executing the task and receives a payment $p$ when successfully completing a task.
-    \item \textbf{Bob}, the User: Bob represents the user requesting execution of a task by Alice as defined in the specification $\phi$. A user provides payments $\{p_0, ..., p_m\}$ into the escrow. Bob can provide multiple future payments into the escrow.
-    \item \textbf{Escrow}: The escrow is a smart contract responsible for holding deposits by Alice and (future) payments by Bob.
-    \item \textbf{Verifier}: The verifier checks the behavior of Alice as defined in the contract. In practice, this role is fulfilled by a smart contract, a dedicated third party, or the user.
+    \item \textbf{Alice}, the Intermediary: Alice is economically rational and entrusted with executing a task. She provides a deposit $D$ into the escrow before executing the task and receives a payment $p$ upon successful completion.
+    \item \textbf{Bob}, the User: Bob represents the user requesting execution of a task by Alice. A user provides payments $\{p_0, ..., p_m\}$ into the escrow. % Bob can provide multiple future payments into the escrow.
+    \item \textbf{Escrow}: The escrow is a smart contract responsible for holding deposits by Alice and payments by Bob.
+    \item \textbf{Verifier}: The verifier detects malicious behavior of Alice. In practice, this role is fulfilled by a smart contract, a dedicated third party, or the user.
 \end{itemize}
 
+%defined in the specification $\phi$
 
 % \dom{Do we need to define blockchain model with finality assumptions, parameter $k$ etc.?}
 
-% \rk{Would it make sense to rename $D_{min}$ to $D_{base}$? Minimum sort of implies that it's already minimized while base can refer to a base value Promise optimizes.}
+% \rk{Would it make sense to rename $D_{min}$ to $D$? Minimum sort of implies that it's already minimized while base can refer to a base value Promise optimizes.}
 % \dom{I'm happy with that change.}
 
 % The generic service typically implies a requirement that the value of the task is ``insured'' via a deposit $D$.
@@ -194,9 +200,9 @@ Given this model, we define the following roles in \sys.
 
 The verifier in the system is able to detect any faults by Alice and is able to prove that Alice was at fault.
 % Alice provides a deposit to deter her from behaving maliciously and receives a payment for successfully completing the task.
-Also, we assume that the protocol utilizing \sys implements payments and deposits through a ledger that provides the functionalities as describes in, e.g.~\cite{Badertscher2018Genesis}.
-The payments and deposits are held in custody by an escrow implemented within the decentralized ledger.
-Further, there is a one to one mapping between the collateral and a user, i.e.\ the collateral of an intermediary is not split between multiple users.
+We further assume that the protocol utilizing \sys implements payments and deposits through a ledger that provides the functionalities as describes in, e.g.~\cite{garay2016bitcoin}.
+% The payments and deposits are held in custody by an escrow implemented within the decentralized ledger.
+Also, there is a one to one mapping between the collateral and a user, i.e.\ the collateral of an intermediary is not split between multiple users.
 Last, agents in the system can be identified with their public/private key pair.
 
 
@@ -218,23 +224,23 @@ Last, agents in the system can be identified with their public/private key pair.
 % }
 
 
-\subsection{Base protocol}
+\subsection{Utilities}
 % \dom{This part is repetitive to the start of this section. Revise and shorten here.}
 % Consider the following generic setup.
-Alice provides a task according to a specification $\phi$ and involving a transaction of total value $V$.
-The transaction can be the transfer of any kind of fungible and non-fungible assets at value $V$.
-For example, Bob could pay Alice to be an operator in NOCUST to finalize off-chain payment with value $V$~\cite{Khalil2019NOCUST}.
+% Alice provides a task with a value of $V_B$ to Bob. % involving a total value $V$.
+% The task is arbitrary and of value $V$.
+% For example, Bob could pay Alice to be an operator in NOCUST to finalize off-chain payment with value $V$~\cite{Khalil2019NOCUST}.
 % Another example involves Alice providing Bob with a digital good using the FairSwap protocol where the good as a value $V$~\cite{fair}.
 % \rk{"such that $D_{min} \geq V$". Not a general statement for all protocols we consider though.}
-Alice is required to provide a minimum amount of collateral $D_{base}$ upfront, such that $D_{base} \geq V$.
-This is to ensure that in the event that Alice cheat Bob out of providing the service, Bob can recover at least his original value, and possibly more if Alice is overcollateralized.
-
-Moreover, the service that Alice offers to Bob has value---and accordingly, Bob pays $p$ every time the service is performed.
+% Alice provides a minimum collateral $D$ upfront, such that $D \geq V_B$.
+% This is to ensure that in the event that Alice cheat Bob out of providing the service, Bob can recover at least his original value. %, and possibly more if Alice is overcollateralized.
+%  the service that Alice offers to Bob has value---and accordingly,
+% Moreover, Bob pays $p$ every time the service is performed.
 Alice can either behave honestly or cheat, with the following payoffs one period ahead.
 $V_A$ denotes the numerical value that Alice attaches to the act of cheating.
 $V_B$ denotes the numerical value that Bob attaches to receiving the service.
 $c$ denotes the cost of an individual transaction. 
-$\mathrm{E}[r]D_{base}$ reflects the expected opportunity cost of locking the capital for one period, calculated as $(1+\mathrm{E}[r])D_{base}-D_{base}$.
+$\mathrm{E}[r]D$ reflects the expected opportunity cost of locking the capital for one period. %, calculated as $(1+\mathrm{E}[r])D-D$.
 
 %  ($H$) ($C$)
 
@@ -242,8 +248,8 @@ $\mathrm{E}[r]D_{base}$ reflects the expected opportunity cost of locking the ca
 \label{eq:status-quo_alice}
 \Pi_A = 
 \begin{cases}
-    p - \mathrm{E}[r]D_{base}, & \text{if Alice is honest} \\
-    V_A - \mathrm{E}[r]D_{base}-D_{base}, & \text{if Alice cheats} \\
+    p - \mathrm{E}[r]D, & \text{if Alice is honest} \\
+    V_A - \mathrm{E}[r]D-D, & \text{if Alice cheats} \\
 \end{cases}
 \end{equation}
 
@@ -261,7 +267,7 @@ $\mathrm{E}[r]D_{base}$ reflects the expected opportunity cost of locking the ca
 \Pi_B= 
 \begin{cases}
 V_B - p-c, & \text{if Alice is honest} \\
-D_{base} -V_B -c , & \text{if Alice cheats} \\
+D -V_B -c , & \text{if Alice cheats} \\
 \end{cases}
 \end{equation}
 
@@ -270,9 +276,9 @@ D_{base} -V_B -c , & \text{if Alice cheats} \\
 % \Pi_B(A=C) = -c
 % \end{equation}
 
-In this setup, each round the game resets. 
-Therefore, Alice will be honest iff $p > V_A -D_{base}$. %$\Pi_A(A=H)>\Pi_A(A=C)$, or equivalently 
-Assuming that $V_B-p>0$, otherwise Bob would not seek the service from Alice in the first place, he stands to gain utility if Alice behaves honestly; if Alice cheats he will receive a payoff of 0.
+Each round the game resets. 
+Therefore, Alice will be honest iff $p > V_A -D$. %$\Pi_A(A=H)>\Pi_A(A=C)$, or equivalently 
+Assuming that $V_B-p>0$, otherwise Bob would not seek the service from Alice in the first place, he stands to gain utility if Alice behaves honestly. %.; if Alice cheats he will receive a payoff of 0.
 
 
 
@@ -283,33 +289,34 @@ Assuming that $V_B-p>0$, otherwise Bob would not seek the service from Alice in 
 \section{\sys}
 \label{sec:promise}
 
-\dom{draw figure of protocol}
-
-In \sys, we introduce temporality and a likelihood of users exiting the system upon the counterparty cheating.
-By introducing these two properties, we allow Bob's payments for future services to reduce the collateral Alice needs to provide.
+In \sys we allow Bob to provide multiple payments in advance and delay the receipt of the payments to Alice.
+In turn, Alice is able to reduce the initially provided collateral from $D$ to $D_I$ such that $D_I < D$.
+At $t=0$ Bob is able to lock $m$ future payments $\{p_0, ..., p_m\}$ in escrow and determine a period $\tau$ after which Alice can receive the payments.
+% When $t < \tau$ the earned payments by Alice serve as collateral to Bob.
+% Thereby, we allow Bob's payments for future services to reduce the collateral Alice needs to provide.
+When $t < \tau$, Alice continues to accumulate collateral as time passes by keeping the cumulative total of her payments $p_i$ in escrow. 
+We provide an intuition in Fig.~\ref{fig:promise}.
 % In \sys, by introducing temporality, we allow Bob's payments for future services to reduce the collateral Alice needs to provide.
-Alice is able to reduce the initially provided collateral from $D_{base}$ to $D_I$ such that $D_I < D_{base}$.
-Alice continues to accumulate collateral as time passes by keeping the cumulative total of her payments $p_i$ in escrow. 
-Alice can withdraw surplus collateral if (i) the payments or initial collateral have been in escrow for more than a period $t \geq \tau$, and (ii) her current collateral is higher than the minimum requirement $D_{base}$. 
+% Alice can withdraw surplus collateral if (i) the payments or initial collateral have been in escrow for more than a period $t \geq \tau$, and (ii) her current collateral is higher than the minimum requirement $D$. 
 This has the following advantages for Alice and Bob. 
 
 \begin{description}
-    \item[Alice:] the barrier to entry as a service provider is lowered, as even in the first period Alice only needs to offer $D_I$ as opposed to $D_{base}$.
-    \item[Bob:] is able to lock multiple future payments $\{p_0, ..., p_m\}$ in escrow. This aggregation allows Bob to reduce transaction costs and guarantess Bob that he only pays Alice if she fulfills the tasks for the given period $m$.
+    \item[Alice:] the barrier to entry as a service provider is lowered, as even in the first period Alice only needs to offer $D_I$ as opposed to $D$.
+    \item[Bob:] the aggregation of multiple payments allows Bob to reduce transaction costs and guarantess Bob that he only pays Alice if she fulfills all tasks for the given period $m$.
 \end{description}
 
-\subsection{Introducing time}
+To argue about the security of \sys, we introduce two concepts: (i) temporality and (ii) a likelihood of users exiting the system upon the counterparty cheating.
 
-% \tolgu{Hi Lewis, could you include the following points in this subsection?}
-% \begin{itemize}
-%     \item We introduce a time parameter $t$ and a period $\tau$ for which Bob locks Alice's payments
-%     \item We introduce a parameter $m$, a multiplier of payments that Bob uses to provide $m$ payments into the escrow
-%     \item Alice now needs to compare between having $m$ guaranteed payments $p$ after a period $\tau$ or the payoff of cheating
-%     \item This transforms the single shot game from Eq. (\ref{eq:status-quo_alice}) and (\ref{eq:status-quo_alice}) to a sequential game as expressed by Eq. (\ref{eq:time_alice}) and (\ref{eq:time_alice})
-% \end{itemize}
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\textwidth]{promise/figures/protocol.pdf}
+    \caption{\sys allows intermediaries (Alice) to lock less initial deposit $D_I$ and use payments $p_i$ provided by users (Bob) as additional deposit. The initial deposit and payments are locked for a period of time $m$ determined by Bob. Only when Alice behaves honestly for the entire period $m$ can Alice withdraw her initial deposit $D_I$ and the payments $pm$.}
+    \label{fig:promise}
+\end{figure}
 
-We introduce temporality as follows.
-Denoting time by $t$, we denote the period for which Alice locks Bob's payments as $\tau$, such that if Bob makes a payment every period $t$ then $\tau=m$.
+\subsection{Introducing Time}
+% We introduce temporality as follows.
+Denoting time by $t$, we define the period for which Bob locks Alice's payments as $\tau$, such that if Bob makes a payment every period $t$ then $\tau=m$.
 Let $m$ denote the number of payments that Bob makes into escrow.
 Discounting is also introduced, where $0<\delta<1$ denotes the discount factor of an agent's valuation of future utility, i.e. the notion that the future is worth less than the present.
 We argue that an agent can spent received payments somewhere else or potentially invest the payment for a profit.
@@ -347,22 +354,22 @@ Bob receives the following payoff, depending on Alice's behavior.
 \end{equation}
 
 
-\subsection{Termination probability}
-Lowering Alice's initial collateral to $D_I$ introduces the risk of Alice cheating Bob.
-As shown in Eq. (\ref{eq:time_alice}), Alice will misbehave if her payoff for cheating is higher than her provided collateral $D_I$ plus the sum of payment $pm$.
+\subsection{Termination Probability}
+Lowering Alice's initial collateral to $D_I$ increases the risk of Alice cheating Bob.
+% As shown in Eq. (\ref{eq:time_alice}), Alice will misbehave if her payoff for cheating is higher than her provided collateral $D_I$ plus the sum of payment $pm$.
 Specifically, in the first round, Alice's collateral is the lowest since she has not provided the service yet and has not added any payment into her collateral pool.
 % \dom{Note for a later point: Lemma: Given a single-shot game between Alice and Bob. If Alice decides to cheat on Bob at $t=0$, then Alice cheats in all subsequent rounds on Bob.}
-By reducing her collateral we essentially promote cheating.
+% By reducing her collateral we essentially promote cheating.
 % However, we argue that in practice Bob would leave the protocol after a certain number of times he is being mistreated, \emph{if he has another choice}.
 % Therefore, we introduce an exit probability $\beta$ for Bob.
 
 Eq. (\ref{eq:status-quo_alice}) and (\ref{eq:time_alice}) implicitly assume that Alice and Bob are playing a one-shot game ad infinitum.
-Under this framework, Bob would happily being tricked out of his $V_B$ again and again by Alice.
-Since this is not realistic, we are adding a function $\beta \to [0,1)$ for Bob such that $\beta$ describes the likelihood that Bob remains in the protocol.
+% Under this framework, Bob would happily being tricked out of his $V_B$ again and again by Alice.
+We argue that Bob exits a protocol after being cheated too often, encoded in the function $\beta \to [0,1)$ describing the likelihood that Bob remains in the protocol.
 Each time Bob gets cheated, $n_c$, the lower the probability that Bob continues to participate.
-Each user can have its own $\beta$ function where users might never participate in a protocol after being cheated and others might tolerate a higher number of such incidents.
+Each user can have its own $\beta$ function where users might choose to never participate again in a protocol after being cheated once and others might tolerate a higher number of incidents.
 This changes Alice's payoff for the protocol.
-Hence, if Alice considers $m$ rounds of the game, she receives the following payoffs:
+% Hence, if Alice considers $m$ rounds of the game, she receives the following payoffs:
 
 \begin{equation}
 \label{eq:promise_alice}
@@ -373,24 +380,25 @@ Hence, if Alice considers $m$ rounds of the game, she receives the following pay
 \end{cases}
 \end{equation}
 
-Bob's payoffs are as follows:
-\begin{equation}
-\label{eq:promise_bob}
-\Pi_B (t) = 
-\begin{cases}
-\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t (V_B - p - \mathrm{E}[r]p(m-t)) - c, & \text{if Alice is honest} \\
-\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t \beta (D_{base} -V_B -c) , & \text{if Alice cheats} \\
-\end{cases}
-\end{equation}
+% Bob's payoffs are as follows:
+% \begin{equation}
+% \label{eq:promise_bob}
+% \Pi_B (t) = 
+% \begin{cases}
+% \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t (V_B - p - \mathrm{E}[r]p(m-t)) - c, & \text{if Alice is honest} \\
+% \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t \beta (D -V_B -c) , & \text{if Alice cheats} \\
+% \end{cases}
+% \end{equation}
 
 
-As $\beta$ decreases the more often Alice cheats, the payoff to Alice and Bob converges to $0$ as $n \rightarrow \infty$.
-For Alice, we increase the motivation to behave honestly by the sum of payments $mp$ that Bob locks in the protocol, discounted as they represent future payments.
-Further, Alice must fear that Bob leaves the protocol altogether if she cheats. % as expressed by $\frac{\beta}{n_c}$.
-By choosing $m$ and $\tau$ high enough, such that Alice's payoff for cheating converges to $0$, leaves Alice no other rational choice than to act honestly.
-This allows Alice to join protocols with less initial collateral while providing Bob with the option to use ongoing payments as an additional security measurement.
-% For Alice, we can see that whether she behaves honestly or cheats, if $D_I+p=D_{base}$, her payoffs remain the same.
-% However, the difference is that it is now easier for Alice to participate in the system and offer a service to Bob, since the deposit she has to provide, $D_I<D_{base}$. 
+As $\beta$ decreases, the payoff to Alice converges to $0$ as $n \rightarrow \infty$.
+For Alice, we increase the motivation to behave honestly by (i) providing a sum of payments $mp$ that Bob locks in the protocol, and (ii) the fear of Bob leaving the protocol altogether if she cheats. % as expressed by $\frac{\beta}{n_c}$.
+As Bob chooses $m$ and $\tau$, he has a direct influence on Alice's expected payoff.
+By setting large $m$ and $\tau$ and being able to quit the protocol upon cheating, he can essentially force rational Alice to behave honestly.
+% for cheating converges to $0$, leaves Alice no other rational choice than to act honestly.
+Overall, Alice can join protocols with less initial collateral while providing Bob with the option to use ongoing payments as an additional security measurement.
+% For Alice, we can see that whether she behaves honestly or cheats, if $D_I+p=D$, her payoffs remain the same.
+% However, the difference is that it is now easier for Alice to participate in the system and offer a service to Bob, since the deposit she has to provide, $D_I<D$. 
 % For Bob, his utility is improved whether Alice is honest or cheats, since $c_L<C$.
 
 
@@ -402,49 +410,48 @@ This allows Alice to join protocols with less initial collateral while providing
 \section{Security Analysis}
 \label{sec:security}
 
-We argue about the security of adding \sys to an existing protocol.
+% We argue about the security of adding \sys to an existing protocol.
 \sys aims to fulfill the following properties:
 
 \begin{enumerate}
-    \item \textbf{Security of funds}: Payments $p$ (future and current) provided by a user as well as deposits $D$ by intermediaries cannot be stolen.
+    \item \textbf{Security of funds}: Payments $p$ (future and current) provided by a user as well as deposits $D$ by intermediaries cannot be stolen. This property is fulfilled by implementing the escrow as a smart contract on a ledger with a functionality and appropriate security parameters as described in~\cite{garay2016bitcoin,gervais2016security}. 
     \item \textbf{Cost reduction for users}: Bob is able to reduce transaction costs $c$ by paying for multiple rounds $m$ of services for payment $p$ in advance.
-    \item \textbf{Collateral reduction for intermediaries}: Alice is able to provide a lower deposit $D_I$ than the deposit required in a single-shot game setting $D_{base}$ while Bob enjoys the same level of security against Alice.
+    \item \textbf{Collateral reduction for intermediaries}: Alice is able to provide a lower deposit $D_I$ than the deposit required in a single-shot game setting $D$ while Bob enjoys the same level of security against Alice.
     \item \textbf{Sybil resistance}: It is not individually rational for Alice to increase her payoff $\Pi$ by cheating Bob in one round and provide the service honestly in the next rounds.
 \end{enumerate}
 
-\subsection{Security of funds}
-Both Alice and Bob store their funds in escrow.
-The escrow needs to be securely implemented as a smart contract.
-% As such, funds are secure given that the underlying ledger functionality is secure.
-The \sys smart contract is required to monitor the status of the service provided by Alice to Bob, such that any potential safety or liveness failure in the target protocol is detected, and any locked payments held in escrow by the contract are released to Bob upon detection. If no failures are detected during the pre-agreed period, the smart-contract allows Alice to withdraw her earned payments.
+% \subsection{Security of funds}
+% Both Alice and Bob store their funds in escrow.
+% The escrow needs to be securely implemented as a smart contract.
+% % As such, funds are secure given that the underlying ledger functionality is secure.
+% The \sys smart contract is required to monitor the status of the service provided by Alice to Bob, such that any potential safety or liveness failure in the target protocol is detected, and any locked payments held in escrow by the contract are released to Bob upon detection. If no failures are detected during the pre-agreed period, the smart-contract allows Alice to withdraw her earned payments.
 
-The security of operations performed in this smart contract is determined by the guarantees of the underlying ledger. Extensive discussion of this is outside the scope of this paper and we refer the reader to~\cite{garay2016bitcoin,gervais2016security,sompolinsky2016bitcoin}. We assume in our work that the underlying ledger is operated by an honest majority such that no safety or liveness provisions are violated.
+% The security of operations performed in this smart contract is determined by the guarantees of the underlying ledger. Extensive discussion of this is outside the scope of this paper and we refer the reader to~\cite{garay2016bitcoin,gervais2016security}. We assume in our work that the safety or liveness provisions of the underlying ledger are not violated. %is operated by an honest majority such that no .
 
-\subsection{Cost reduction for users}
+\subsection{Cost Reduction for Users}
 Assume that Alice behaves honestly.
-If a user pays every round $t$ for the service provided by Alice, then his payoff per round is $\Pi_B = V_B - p - c$ where $V_B$ is his private value for getting the service, $p$ the payment he makes and $c$ the cost for doing the payment.
-Locking multiple payments incurs opportunity cost.
-The opportunity cost is lowered at every time step as the payments are assigned to the intermediary.
-Hence, Bob starts with paying opportunity cost of $\mathrm{E}[r]pm$ at $t=0$ and $\mathrm{E}[r]p(m-1)$ at $t=1$.
-Generalizing this for $t$ rounds, leaves us with $\big( \frac{\delta}{1+r} \big)^t \mathrm{E}[r]p(m-t)$ at every time step $t$ from today's perspective.
-
-The user should lock future payments such that his utility is increased.
-This case is fulfilled, when the sum of the transaction costs $c$ for $m$ payments is greater than the opportunity cost for locking additional payments plus the single transaction cost for making the prepayments.
-Hence, the boundary for a user to choose \sys as individually rational choice is given by:
+If a user pays every round $t$ for the service provided by Alice, then his payoff per round is $V_B - p - c$. % where $V_B$ is his private value for getting the service, $p$ the payment he makes and $c$ the cost for doing the payment.
+However, locking multiple payments incurs opportunity cost.
+This cost is lowered at every time step as the payments are assigned to the intermediary.
+Hence, Bob starts with an opportunity cost of $\mathrm{E}[r]pm$ at $t=0$ and $\mathrm{E}[r]p(m-1)$ at $t=1$.
+Generalizing this for $t$ rounds, leaves us with $\mathrm{E}[r]p(m-t)$. % at every time step $t$. % from today's perspective.
+The user locks future payments when the sum of the transaction costs $c$ for $m$ payments is greater than the opportunity cost for locking additional payments plus the single transaction cost for making the prepayments.
+Hence, the boundary for a user to choose \sys as individually rational choice maximizing his payoff is given by:
 
 \begin{align}
 \label{eq:decision-bound-user}
     \sum_{t=1}^m \big( \frac{\delta}{1+r} \big)^t c = \sum_{t=0}^m \big( \frac{\delta}{1+r} \big)^t \mathrm{E}[r]p(m-t)
 \end{align}
 
-As long as the left hand side of Eq. (\ref{eq:decision-bound-user}) is larger, Bob should use \sys to lock multiple payments $pm$ as it is his individually rational choice that maximises his payoff $\Pi_B$.
+% Provided the left hand side of Eq. (\ref{eq:decision-bound-user}) is greater, Bob should use \sys to lock multiple payments $pm$ as it is his individually rational choice that maximizes his payoff $\Pi_B$.
 
-\subsection{Collateral reduction for intermediaries}
+\subsection{Collateral Reduction and Sybil Resistance}
 
-Alice reduces her initial collateral with \sys from $D_base$ to $D_I$ where $D_I < D_{base}$.
-While this removes her entry barrier from the protocol, arguably Alice could cheat in the protocol as she has ``less skin in the game''.
-By introducing $\beta$, reflecting a users probability to only accept a certain number of times being cheated, we counter Alice's desire to cheat.
-More formally, we can calculate the decision bound for Alice's individually rational choice by comparing the two options in Eq. (\ref{eq:promise_alice}).
+% Alice reduces her initial collateral with \sys.% from $D$ to $D_I$ where $D_I < D$.
+% While this lowers her entry barrier, arguably this makes it easier for Alice to cheat in the protocol as she has less at stake.
+% By introducing $\beta$ we Alice's desire to cheat is reduced.
+% More formally, 
+We can calculate the decision bound for Alice's individually rational choice to cheat Bob by comparing the two options in Eq. (\ref{eq:promise_alice}).
 % \begin{equation}
 %     \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1) =
 %     \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (V_A - \mathrm{E}[r]D_{I}-D_{I})
@@ -464,32 +471,33 @@ Similarly, Bob can determine how high $D_I$ should be under the assumption that 
     D_I = \frac{\big( \frac{\delta}{1+r} \big)^{m} pm - \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta V_A}{ ((1+\mathrm{E}[r])^{m}-1) - \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (\mathrm{E}[r]-1)}
 \end{equation}
 
-Given that $\beta$ is lowered aggressively, i.e.\ Bob tolerates only few task violations $n_c$, Alice should choose to be honest as this maximizes her payoff.
+Assuming that $\beta$ is lowered aggressively, i.e.\ Bob tolerates only few task violations $n_c$, Alice  chooses to be honest as this maximizes her payoff.
 Being honest with a reduced collateral $D_I$ is thereby the individually rational choice.
-Given that Bob might even be aware for the involved parameters $V_A$, $r$, and can set the parameters $p$ and $m$ himself, Bob is able to calculate at which likelihood he should exit a given protocol.
+Given that Bob is aware for the involved parameters $V_A$, $r$, and can set the parameters $p$ and $m$ himself, Bob is able to calculate at which likelihood he should exit a given protocol given by Eq. (\ref{eq:beta}).
+Similarly, Bob can decide which level of colalteral $D_I$ is sufficent for him using Eq.(\ref{eq:d_initial}).
 
-\subsection{Sybil resistance}
-In the previous section, we argued that if $\beta$ is lowered aggressively, Alice should anticipate that Bob leaves the protocol.
-In turn, Alice can do no better than being honest.
-However, if there is a non-negligible probability that Bob remains in the protocol after being cheated once, Alice can try to create a Sybil identity $A'$ to (i) cheat Bob in round $t=0$ and behave honestly in round $t=1$ to $t=m+1$.
-Hence, Bob can only prevent Alice from executing a Sybil attack, if $\beta = 0$.
+% \subsection{Sybil resistance}
+\subsubsection{Sybil Identities}
+We argue that if $\beta$ is lowered aggressively, Alice can do no better than being honest.
+However, if there is a non-negligible probability that Bob remains in the protocol after being cheated once, Alice can try to create a Sybil identity $A'$ to (i) cheat Bob in round $t=0$ and (ii) behave honestly in round $1$ to $m+1$.
+Hence, Bob can only be sure to prevent Alice from executing a Sybil attack, if $\beta = 0$.
 
-\subsection{Beta factor}
+\subsection{Beta Factor Over Time}
 The $\beta$ factor set by Bob is the crucial security parameter for Bob given we are in a permissionless system.
 We argue that setting the $\beta$ factor depends on Bob's reliance on participating in a protocol.
 If Bob \emph{requires} the service Alice provides and there is \emph{no alternative} to the protocol in which Alice operates, Bob is faced with a \emph{monopoly}.
-In a monopoly Bob has no choices, $\beta$ likely never approaches 0 as Bob would just need to tolerate Alice's misbehavior.
-To protect Bob, \sys requires that $D_I$ of Alice is close or equal to $D_base$.
-Otherwise, Alice can create Sybil attacks on Bob or just outright cheat every round as Bob would try to use the service over and over.
+In a monopoly Bob $\beta$ likely never approaches 0 as Bob is forced to tolerate Alice's misbehavior.
+To protect Bob, \sys requires that $D_I$ of Alice is close or equal to $D$ in a monopoly.
+% Otherwise, Alice can create Sybil attacks on Bob or just outright cheat every round as Bob would try to use the service over and over.
 
 The opposite market situation is \emph{perfect competition}.
 Bob can choose from a wide selection of service providers to interact with\footnote{
 However, as we lack strong identities, these service providers could all be Sybil identities of Alice.
 Recognizing that perfect competition exists is a challenging task and we leave this as future work.}.
 Assuming perfect competition exists, Bob has the choice to leave a protocol any time.
-As an example, we could imagine Bob choosing between using a payment hub like NOCUST or a payment channel network like Lighting.
+As an example, we could imagine Bob choosing between using a payment hub like NOCUST or a payment channel network like Lighting to obtain scalable and cheap payments.
 For simplicity of argument, we assume that Bob is indifferent if he pays in Bitcoin or Ether.
-If Bob would be cheated on by an intermediary in NOCUST, could simply switch to using the Lightning Network.
+If Bob would be cheated on by an intermediary in NOCUST, he could switch to using the Lightning Network.
 In turn, Bob can set $\beta$ to 0.
 In these cases we can substantially lower the initial collateral $D_I$ using Eq. (\ref{eq:d_initial}).
 
@@ -502,30 +510,30 @@ In these cases we can substantially lower the initial collateral $D_I$ using Eq.
 %-------------------------------------------------
 
 
-\section{Applications}
-\label{sec:application}
+% \section{Applications}
+% \label{sec:application}
 
-In this section we show how applying \sys to a set of popular protocols can improve them.
-% \aza{Shorten this to 1 paragraph and rather add 2 more applications! For the paper, it is better to even have a single paragraph, but highlight multiple protocols - rather than going into detail on 1 specific.}
+% In this section we show how applying \sys to a set of popular protocols can improve them.
+% % \aza{Shorten this to 1 paragraph and rather add 2 more applications! For the paper, it is better to even have a single paragraph, but highlight multiple protocols - rather than going into detail on 1 specific.}
 
-\subsection{NOCUST}
+% \subsection{NOCUST}
 
-NOCUST is a second-layer payment protocol whereby an untrusted intermediary operates a commit-chain to facilitate payments between its users~\cite{Khalil2019NOCUST}. We consider a scenario where Alice is the intermediary commit-chain operator, and Bob is a payment recipient. In this setting we propose to employ \sys as follows: Any fee to be paid by Bob to Alice in exchange for the delivery of an incoming payment would be locked as collateral that Bob could claim if the NOCUST protocol fails. Over time, the fees locked in \sys would grant Bob instant finality over larger payments, increasing the utility of the service.
+% NOCUST is a second-layer payment protocol whereby an untrusted intermediary operates a commit-chain to facilitate payments between its users~\cite{Khalil2019NOCUST}. We consider a scenario where Alice is the intermediary commit-chain operator, and Bob is a payment recipient. In this setting we propose to employ \sys as follows: Any fee to be paid by Bob to Alice in exchange for the delivery of an incoming payment would be locked as collateral that Bob could claim if the NOCUST protocol fails. Over time, the fees locked in \sys would grant Bob instant finality over larger payments, increasing the utility of the service.
 
 
-% We consider a scenario where Alice is the intermediary commit-chain operator, and Bob is a payment recipient. Alice can effectively deliver payments from other users to Bob without Alice having to put up additional collateral. However, without collateral, Bob has to wait for two rounds of the protocol to succeed before being guaranteed finality of an incoming payment. This delay in finality may be too long for certain use cases. 
+% % We consider a scenario where Alice is the intermediary commit-chain operator, and Bob is a payment recipient. Alice can effectively deliver payments from other users to Bob without Alice having to put up additional collateral. However, without collateral, Bob has to wait for two rounds of the protocol to succeed before being guaranteed finality of an incoming payment. This delay in finality may be too long for certain use cases. 
 
-% Using NOCUST with additional collateral by Alice, however, can provide instant finality for Bob. In this case, Alice puts up an amount of collateral that is equal to what Bob expects to receive within two rounds of the protocol, such that if the protocol fails and pending payments are reverted, the collateral put up by Alice can act as a reimbursement for any expenses Bob may have incurred before finalization. For example, in a sale scenario, Bob could release some goods immediately after Alice promises to deliver the payment for them, instead of waiting two rounds for guaranteed finality. If Alice fails to deliver the payment, her collateral would paid to Bob to cover the cost of the goods.
+% % Using NOCUST with additional collateral by Alice, however, can provide instant finality for Bob. In this case, Alice puts up an amount of collateral that is equal to what Bob expects to receive within two rounds of the protocol, such that if the protocol fails and pending payments are reverted, the collateral put up by Alice can act as a reimbursement for any expenses Bob may have incurred before finalization. For example, in a sale scenario, Bob could release some goods immediately after Alice promises to deliver the payment for them, instead of waiting two rounds for guaranteed finality. If Alice fails to deliver the payment, her collateral would paid to Bob to cover the cost of the goods.
 
-% In this setting we propose to employ \sys as follows: Any fee to be paid by Bob to Alice in exchange for the delivery of an incoming payment would be locked as collateral that Bob could claim if the NOCUST protocol fails. This gradually increases how reliable Bob perceives Alice to be as an intermediary as more fees are accumulated towards reimbursing Bob for any potential damages. If Bob wishes to utilize Alice's service with minimal risk, Bob would not release any goods in return for incoming payments until Bob is guaranteed finality. Over time, the fees locked in \sys would grant Bob instant finality over larger payments, increasing the utility of the service.
+% % In this setting we propose to employ \sys as follows: Any fee to be paid by Bob to Alice in exchange for the delivery of an incoming payment would be locked as collateral that Bob could claim if the NOCUST protocol fails. This gradually increases how reliable Bob perceives Alice to be as an intermediary as more fees are accumulated towards reimbursing Bob for any potential damages. If Bob wishes to utilize Alice's service with minimal risk, Bob would not release any goods in return for incoming payments until Bob is guaranteed finality. Over time, the fees locked in \sys would grant Bob instant finality over larger payments, increasing the utility of the service.
 
-\subsection{XCLAIM}
+% \subsection{XCLAIM}
 
-XCLAIM is a protocol that allows users to transfer assets between heterogeneous decentralized ledgers using a collateralized intermediary~\cite{Zamyatin2019XCLAIM}.
-Instead of relying on a trusted third party like a centralized exchange, the intermediary must provide a collateral to ensure that she does not steal the coins she holds in custody.
-She has to verify correctness of her actions by submitting transaction inclusion proofs to the smart contracts that augments the protocol.
-\sys can be applied such that Alice locks some initial collateral $D_I$ and issues backed-tokens using this collateral.
-Bob, using her services, is able to lock the future payments of Alice to allow him to transfer more assets between the ledgers.
+% XCLAIM is a protocol that allows users to transfer assets between heterogeneous decentralized ledgers using a collateralized intermediary~\cite{Zamyatin2019XCLAIM}.
+% Instead of relying on a trusted third party like a centralized exchange, the intermediary must provide a collateral to ensure that she does not steal the coins she holds in custody.
+% She has to verify correctness of her actions by submitting transaction inclusion proofs to the smart contracts that augments the protocol.
+% \sys can be applied such that Alice locks some initial collateral $D_I$ and issues backed-tokens using this collateral.
+% Bob, using her services, is able to lock the future payments of Alice to allow him to transfer more assets between the ledgers.
 
 % \subsection{TrueBit}
 % TrueBit is a protocol in which a set of intermediaries provide computation services~\cite{teutsch2017scalable}.
@@ -567,20 +575,23 @@ Bob, using her services, is able to lock the future payments of Alice to allow h
 There are two strands of related literature.
 The first one comes from the financial world covering (advance) payments for financial contracts.
 The second strand comes from the more recent work in decentralized ledgers.
+In the economics literature, a wide range of work focuses on secured debt, such as ~\cite{scott1977bankruptcy,stulz1985analysis}.
+However, these concepts rely on trust on third parties to maintain security in the debt and payment positions.
+\sys replaces this third-party trust by holding advance payments in a smart contract escrow.
+%which shows that some profitable projects will not be undertaken by a firm which can finance them only with equity or unsecured debt, but will be undertaken by a firm which can finance them with secured debt.
+% \cite{boot1994moral} considers moral hazard and secured lending in the context of an infinitely repeated credit market game. 
+% In addition, the issuance of secured debt has been argued to increase the value of a firm~\cite{scott1977bankruptcy}.
+% Other work focuses on the efficiency secured debt under conditions of imperfect information~\cite{triantis1992secured}.
+% Another branch of work relates to down payments (a payment made for something bought on credit)~\cite{engelhardt}. 
+% ,mayer1996gifts,engelhardt1994house
+%of secured debt~\cite{hill2001secured}, and 
 
-In the economics literature, some work focuses on secured debt, such as ~\cite{stulz1985analysis} which shows that some profitable projects will not be undertaken by a firm which can finance them only with equity or unsecured debt, but will be undertaken by a firm which can finance them with secured debt.
-\cite{boot1994moral} considers moral hazard and secured lending in the context of an infinitely repeated credit market game. 
-In addition, the issuance of secured dent has been argued to increase the value of a firm~\cite{scott1977bankruptcy}.
-Other work focuses on the efficiency of secured debt~\cite{hill2001secured}, and secured debt under conditions of imperfect information~\cite{triantis1992secured}.
-Another branch of work relates to down payments (a payment made for something bought on credit)~\cite{engelhardt,mayer1996gifts,engelhardt1994house}. 
-
-
-On the second strand, Balance is a protocol that allow intermediaries to lower their collateral over time~\cite{Harz2019Balance}.
-It operates exactly at the other end of \sys: instead of lowering the initial collateral, the more an agent behaves honestly, the more the collateral is reduced.
+On the second strand, Balance is a protocol that allows intermediaries to lower their collateral over time~\cite{Harz2019Balance}.
+It operates at the other end of \sys: instead of lowering the initial collateral, the more an agent behaves honestly, the higher the reduction of collateral.
 % Balance requires the highest collateral to be provided at the start of the interaction between agents and makes the assumption that payments are close to 0 (i.e.\ there is perfect competition).
 \sys and Balance can be combined together to first reduce initial collateral when bootstrapping a new protocol and then lower collateral requirements for established agents over time.
 Teutsch et al. discuss bootstrapping a token for verifiable computations~\cite{Teutsch2019Boostrap}.
-This work discusses how to enable users, like Bob, to obtain the required funds to participate in TrueBit.
+% This work discusses how to enable users, like Bob, to obtain the required funds to participate in TrueBit.
 Their proposal includes a governance game that allows to exchange special governance tokens into collateral tokens (for intermediaries) and utility tokens (for users).
 Last, the idea of bundling payments together is also introduced in ~\cite{Berg2018} to create subscriptions for services of agents.
 \sys extends this idea to allow collateral reduction for intermediaries.
@@ -606,7 +617,7 @@ This allows Alice to reduce her initial collateral requirement, allowing protoco
 Bob is able to reduce his transaction cost as he transfers a sum of payments.
 Further, Bob is able to receive the service in full --- for the entire period he pre-paid --- or he is refunded the entire sum of payments.
 We have introduced a semi-formal model for \sys.
-We discuss the security and the effect of the $\beta$ parameter, but leave formal proofs of \sys security properties as future work.
+We discuss the security and the effect of the $\beta$ parameter, but leave formal proofs of the security properties as future work.
 
 
 \bibliographystyle{splncs04}
