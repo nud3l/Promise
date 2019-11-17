@@ -44,7 +44,7 @@
 \begin{document}
 
 \title{
-\sys: Leveraging Future Gains for Collateral Reduction
+\sys: Leveraging Future Gains for Collateral Reduction in Competitive Markets
 % \sys: Leveraging Future Payments for Bootstrapping Collateralized Protocols
 } 
 \author{
@@ -60,6 +60,7 @@
 %-------------------------------------------------
 
 \begin{abstract}
+\dom{Proposal: change the paper to restrict the mechanism to protocols in which there is competition, i.e. Bob can exit when Alice is malicious. I think one of the biggest problems is that \sys does not work when you have a monopoly situation.}
 Collateral employed in cryptoeconomic protocols protects against the misbehaviour of economically rational agents, compensating honest users for damages and punishing misbehaving parties.
 %It can increase the trustworthiness of a system by compensating honest users for damages and revoking the locked capital of cheating parties.
 The introduction of collateral, however, carries two disadvantages: (i) requiring actors to lock up substantial amount of collateral can be an entry barrier, limiting the set of candidates to wealthy agents; and (ii) affected agents incur ongoing opportunity costs as the collateral cannot be utilized elsewhere.
@@ -104,8 +105,10 @@ Since their nascence, arguably the most significant property of blockchains is t
 Yet the trustless nature of the systems means not only that parties \textit{may} transact without trusting each other, but also that they \textit{should not trust} each other.
 %\footnote{Or at least should not trust each other.}.
 This creates a design challenge for interactions which would typically involve such trust. 
-In this paper, we focus on blockchain protocols which, at least in part, substitute \textit{trust} for \textit{collateral}.
-Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
+In this paper, we focus on blockchain protocols which, at least in part, express \textit{trust} through \textit{collateral}.
+Here, collateral is value escrowed by party A to guarantee party B that A will not misbehave given that A's economic gain from cheating is not higher than the collateral value.
+In particular, payment protocols can be designed such that B is guaranteed to receive at least the same amount of funds from A that are at risk.
+% Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
 %It allows us to create systems that are resistant against economically rational adversaries by imposing the threat of destroying their money and motivating their honest behavior.
 Protocols involving collateral include cross-chain communication~\cite{Zamyatin2019XCLAIM}, scalable off-chain payments~\cite{Khalil2019NOCUST}, state channels~\cite{dziembowski2018general}, and watchtowers~\cite{mccorry2018pisa}.
 % avarikioti2019brick avarikioti2018towards
@@ -113,9 +116,9 @@ Protocols involving collateral include cross-chain communication~\cite{Zamyatin2
 % outsourcing of computation and verification games~\cite{teutsch2017scalable}
 
 \noindent\textbf{Problem.}
-Relying on collateral in place of trust is itself associated with a different set of challenges. 
+% Relying on collateral as a means of trust is associated with a different set of challenges. 
 Collateralization requires the provision of a substantial amount of funds upon protocol initialization, limiting the set of participants to a selected few.
-Leaving participation to a small set of agents can lead to phenomenos like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
+Leaving participation to a small set of agents can lead to phenomenons like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
 % The concept of equitability in Proof-of-Stake (PoS) protocols explores this phenomenon of the  in this context.
 % Wealthy agents are able to earn an absolutely larger proportion of the rewards as their likelihood to earn is increased by their amount of collateral.
 % In the permissionless setting, protocols with collateral should ideally be egalitarian, i.e. agents are able to earn rewards proportional to their deposits~\cite{Karakostas2019Egalitarianism}.
@@ -130,7 +133,7 @@ Finally, locked funds result in opportunity costs for the agent who could use th
 \noindent\textbf{This work.}
 We present \sys, a simple but effective mechanism to lower entry barriers for intermediaries in protocols relying on collateral for secure operation.
 Instead of locking up a significant amount of funds as collateral, \sys allows intermediaries to stake their future income, ``promised" for correctly providing the service (i.e., fees), instead.
-Similar to online orders in e-commerce, users can choose to pay fees upfront (``forward payments") - for a some pre-agreed service period.
+Similar to online orders in e-commerce, users can choose to pay fees upfront (``forward payments") -- for a some pre-agreed service period.
 However, instead of transferring these payments directly to the intermediary, users lock pre-paid fees in a escrow smart contact, preventing theft by either party. 
 The intermediary needs to provide the service honestly for the entire period set by the user.
 The benefit of this scheme is twofold: (i) the intermediary is incentivized to act honestly while enjoying a lower initial collateral, and (ii) the user can reduce his transaction cost and only pays if the service was provided honestly over his defined period. %, authorized by the smart contract, 
@@ -172,6 +175,20 @@ In \sys, a user Bob engages an intermediary Alice to fulfill a task valued at $V
 Bob pays Alice $p$ each period $t$ for performing the task. % for fulling the task.
 Given the absence of \textit{strong identities}, the total value of the task to Bob ($V_B$) needs to be fully collateralized, via a deposit $D$, such that $D \geq V_B$.
 For example, if a particular task involves Alice offering a service and Bob having a \$100 exposure---in the form of counter-party risk---to Alice, Alice will need to post at least \$100 as collateral to \textit{insure} offset the exposure, such that Bob does not stand to lose funds if Alice behaves maliciously. % and tries to steal them.
+
+Formally, we adopt the definitions of agreements in cryptoeconomic protocols from~\cite{Harz2019Balance}.
+The service providing agent Alice $A$ and the receiving agent Bob $B$ participate in an agreement encoded by:
+
+\begin{equation}
+	\mathcal{A} = \langle \Phi, p, D \rangle
+\end{equation}
+
+In such an agreement, Alice needs to fulfil the specification $\Phi$ and provide the collateral $D$ in advance.
+When Alice fulfills the specification, the payment $p$ held in escrow is released to Alice.
+
+\subsection{Specifications}
+\dom{We need to explain what specifications are and give some examples here.}
+
 
 \subsection{Roles}
 
@@ -309,7 +326,7 @@ To argue about the security of \sys, we introduce two concepts: (i) temporality 
 
 \begin{figure}[t!]
     \centering
-    \includegraphics[width=\textwidth]{promise/figures/protocol.pdf}
+    \includegraphics[width=\textwidth]{figures/protocol.pdf}
     \caption{\sys allows intermediaries (Alice) to lock less initial deposit $D_I$ and use payments $p_i$ provided by users (Bob) as additional deposit. The initial deposit and payments are locked for a period of time $m$ determined by Bob. Only when Alice behaves honestly for the entire period $m$ can Alice withdraw her initial deposit $D_I$ and the payments $pm$.}
     \label{fig:promise}
 \end{figure}
