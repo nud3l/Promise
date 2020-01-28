@@ -8,3 +8,4 @@
 *.out
 *.synctex.gz
 src/node_modules/*
+src/build/*
