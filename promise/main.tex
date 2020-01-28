@@ -1,4 +1,3 @@
-
 \documentclass[runningheads]{llncs}
 \usepackage[utf8]{inputenc}
 %\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
@@ -101,22 +100,26 @@ We provide a model for evaluating the effectiveness of \sys and argue its securi
 %     \item make sure assumptions are complete
 % \end{itemize}}
 
-Since their nascence, arguably the most significant property of blockchains is their facilitation of trustless exchange between entities with \emph{weak identities}~\cite{rainer}~\footnote{Nodes, with \emph{weak} identities, are able to suddenly leave a network; agents, with \emph{strong} identities, cannot.}.
+Since their creation, arguably the most significant property of blockchains is their facilitation of trustless exchange between entities with \emph{weak identities}~\cite{rainer}~\footnote{Agents with \emph{weak} identities are able to suddenly leave a network; agents with \emph{strong} identities cannot.}.
 Yet the trustless nature of the systems means not only that parties \textit{may} transact without trusting each other, but also that they \textit{should not trust} each other.
 %\footnote{Or at least should not trust each other.}.
 This creates a design challenge for interactions which would typically involve such trust. 
-In this paper, we focus on blockchain protocols which, at least in part, express \textit{trust} through \textit{collateral}.
-Here, collateral is value escrowed by party A to guarantee party B that A will not misbehave given that A's economic gain from cheating is not higher than the collateral value.
+% In this paper, we focus on blockchain protocols which, at least in part, express \textit{trust} through \textit{collateral}.
+%Here, collateral is value escrowed by party A to guarantee party B that A will not misbehave given that A's economic gain from cheating is not higher than the collateral value.
 In particular, payment protocols can be designed such that B is guaranteed to receive at least the same amount of funds from A that are at risk.
 % Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
+In this paper, we focus on blockchain protocols which, at least in part, encode \textit{trust} by monetary \textit{collateral}.
+%\dom{Definition is a bit tricky, would change that it not only relates to funds but basically under rationality assumption, A would not cheat.}
+Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
 %It allows us to create systems that are resistant against economically rational adversaries by imposing the threat of destroying their money and motivating their honest behavior.
 Protocols involving collateral include cross-chain communication~\cite{Zamyatin2019XCLAIM}, scalable off-chain payments~\cite{Khalil2019NOCUST}, state channels~\cite{dziembowski2018general}, and watchtowers~\cite{mccorry2018pisa}.
 % avarikioti2019brick avarikioti2018towards
 %, and (decentralized) mining pools.\dom{need citation for smartpool and p2pool}
 % outsourcing of computation and verification games~\cite{teutsch2017scalable}
 
-\noindent\textbf{Problem.}
 % Relying on collateral as a means of trust is associated with a different set of challenges. 
+\paragraph{Problem.}
+Relying on collateral as trust is itself associated with a different set of challenges. 
 Collateralization requires the provision of a substantial amount of funds upon protocol initialization, limiting the set of participants to a selected few.
 Leaving participation to a small set of agents can lead to phenomenons like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
 % The concept of equitability in Proof-of-Stake (PoS) protocols explores this phenomenon of the  in this context.
@@ -130,7 +133,7 @@ Finally, locked funds result in opportunity costs for the agent who could use th
 % which may make it challenging for parties to participate in the protocol.
 % In addition, the funds are locked up for the duration of the protocol.
 % \aza{Citations here and a bit more detail?}
-\noindent\textbf{This work.}
+\paragraph{This work.}
 We present \sys, a simple but effective mechanism to lower entry barriers for intermediaries in protocols relying on collateral for secure operation.
 Instead of locking up a significant amount of funds as collateral, \sys allows intermediaries to stake their future income, ``promised" for correctly providing the service (i.e., fees), instead.
 Similar to online orders in e-commerce, users can choose to pay fees upfront (``forward payments") -- for a some pre-agreed service period.
@@ -140,8 +143,15 @@ The benefit of this scheme is twofold: (i) the intermediary is incentivized to a
 %can leverage the pre-paid funds as collateral to maintain secure operation, reducing the liquidity necessary to launch such services; (ii) the user, on the other hand, can be incentivized via a lower fee rate.
 As long as the expected future revenue from correct operation exceeds potential gains by the intermediary, users have the option to leave the protocol, and misbehavior can be proved to the smart contract, \sys incentivizes correct behavior.
 
-\noindent\textbf{Outline.}
-We introduce the system model and assumptions in Section~\ref{sec:model}, followed by a description of  \sys in Section~\ref{sec:promise}.
+\paragraph{Application.}
+We apply \sys to NOCUST.
+NOCUST is a commit-chain protocol that allows to send cryptocurrency payments off-chain facilitated by so-called operators~\cite{Khalil2019NOCUST}.
+Operators are service-providing agents that (i) collect fees for operating the off-chain payment network, and (ii) provide a certain amount of collateral to insure finalization of payments.
+We show that with an increasing number of operators, the amount of collateral each operator provides can be \emph{lowered}.
+Moreover, we show that the implementation of \sys in an Ethereum Solidity smart contract only adds XX cost for the user and XX cost for the operator.
+
+\paragraph{Outline.}
+We introduce the system model and assumptions in Section~\ref{sec:model}, followed by a description of \sys in Section~\ref{sec:promise}.
 Next, we discuss the security of \sys in Section~\ref{sec:security}. % and highlight how \sys can be applied to existing systems in Section~\ref{sec:application}.
 We discuss related work in Section~\ref{sec:related} and conclude in Section~\ref{sec:conclusion}.
 
@@ -315,14 +325,12 @@ When $t < \tau$, Alice continues to accumulate collateral as time passes by keep
 We provide an intuition in Fig.~\ref{fig:promise}.
 % In \sys, by introducing temporality, we allow Bob's payments for future services to reduce the collateral Alice needs to provide.
 % Alice can withdraw surplus collateral if (i) the payments or initial collateral have been in escrow for more than a period $t \geq \tau$, and (ii) her current collateral is higher than the minimum requirement $D$. 
-This has the following advantages for Alice and Bob. 
+\sys has the following advantages for Alice and Bob. 
 
 \begin{description}
     \item[Alice:] the barrier to entry as a service provider is lowered, as even in the first period Alice only needs to offer $D_I$ as opposed to $D$.
     \item[Bob:] the aggregation of multiple payments allows Bob to reduce transaction costs and guarantess Bob that he only pays Alice if she fulfills all tasks for the given period $m$.
 \end{description}
-
-To argue about the security of \sys, we introduce two concepts: (i) temporality and (ii) a likelihood of users exiting the system upon the counterparty cheating.
 
 \begin{figure}[t!]
     \centering
@@ -331,8 +339,28 @@ To argue about the security of \sys, we introduce two concepts: (i) temporality 
     \label{fig:promise}
 \end{figure}
 
+
+\dom{Introduce the protocol}
+
+\subsection{Protocol}
+
+The \sys protocol consists of three steps.
+We denote the intermediary as $A$, the user as $B$, and the smart contract implementing \sys as $P$.
+We assume that $A$ and $B$ have agreed the total payment and the period over which the payment is to-be-paid in advance.
+
+\begin{enumerate}
+    \item At $t=0$. $B$ locks $pm$ payments in $P$.
+    \item At $t=0$. $A$ locks the initial deposit $D_I$ in $P$.
+    \item At $t=1$ until $t=m$. $A$ provides the agreed task to $B$. $P$ allocates one payment $p$ to $A$, if (i) $A$ provides a proof to $P$ that the task was completed, or (ii) $B$ does not provide a fraud proof that $A$ did not provide the task within a determined time~\cite{Al-Bassam2018}.
+    \item At $t=m$. $A$ withdraws $pm$ and $D_I$ from $P$.
+\end{enumerate}
+
+
+
+To argue about the security of \sys, we introduce two concepts: (i) temporality and (ii) a likelihood of users exiting the system upon the counterparty cheating.
+
 \subsection{Introducing Time}
-% We introduce temporality as follows.
+We introduce temporality as follows.
 Denoting time by $t$, we define the period for which Bob locks Alice's payments as $\tau$, such that if Bob makes a payment every period $t$ then $\tau=m$.
 Let $m$ denote the number of payments that Bob makes into escrow.
 Discounting is also introduced, where $0<\delta<1$ denotes the discount factor of an agent's valuation of future utility, i.e. the notion that the future is worth less than the present.
@@ -346,8 +374,8 @@ The payoffs to Alice and Bob are as follows.
 \label{eq:time_alice}
 \Pi_A(t) = 
 \begin{cases}
-    % \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{\tau} ( p - \mathrm{E}[r]D_{I}), & \text{if Alice is honest} \\
-    \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if Alice is honest} \\
+    \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{\tau} ( p - \mathrm{E}[r]D_{I}), & \text{if Alice is honest} \\
+    % \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if Alice is honest} \\
     \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I}), & \text{if Alice cheats} \\
 \end{cases}
 \end{equation}
@@ -576,6 +604,28 @@ In these cases we can substantially lower the initial collateral $D_I$ using Eq.
 % \end{itemize}
 
 %%%%%%%%%%%%%%
+
+%-------------------------------------------------
+%---------------Application------------------------
+%-------------------------------------------------
+
+\section{Application}
+\label{sec:application}
+
+\subsection{NOCUST}
+
+NOCUST is a second-layer payment protocol whereby an untrusted intermediary operates a commit-chain to facilitate payments between its users~\cite{Khalil2019NOCUST}. We consider a scenario where Alice is the intermediary commit-chain operator, and Bob is a payment recipient. In this setting we propose to employ \sys as follows: Any fee to be paid by Bob to Alice in exchange for the delivery of an incoming payment would be locked as collateral that Bob could claim if the NOCUST protocol fails. Over time, the fees locked in \sys would grant Bob instant finality over larger payments, increasing the utility of the service.
+
+
+We consider a scenario where Alice is the intermediary commit-chain operator, and Bob is a payment recipient. Alice can effectively deliver payments from other users to Bob without Alice having to put up additional collateral. However, without collateral, Bob has to wait for two rounds of the protocol to succeed before being guaranteed finality of an incoming payment. This delay in finality may be too long for certain use cases. 
+
+Using NOCUST with additional collateral by Alice, however, can provide instant finality for Bob. In this case, Alice puts up an amount of collateral that is equal to what Bob expects to receive within two rounds of the protocol, such that if the protocol fails and pending payments are reverted, the collateral put up by Alice can act as a reimbursement for any expenses Bob may have incurred before finalization. For example, in a sale scenario, Bob could release some goods immediately after Alice promises to deliver the payment for them, instead of waiting two rounds for guaranteed finality. If Alice fails to deliver the payment, her collateral would paid to Bob to cover the cost of the goods.
+
+In this setting we propose to employ \sys as follows: Any fee to be paid by Bob to Alice in exchange for the delivery of an incoming payment would be locked as collateral that Bob could claim if the NOCUST protocol fails. This gradually increases how reliable Bob perceives Alice to be as an intermediary as more fees are accumulated towards reimbursing Bob for any potential damages. If Bob wishes to utilize Alice's service with minimal risk, Bob would not release any goods in return for incoming payments until Bob is guaranteed finality. Over time, the fees locked in \sys would grant Bob instant finality over larger payments, increasing the utility of the service.
+
+\subsection{Implementation}
+
+We implement \sys in Solidity
 
 %-------------------------------------------------
 %---------------RELATED WORK------------------------
