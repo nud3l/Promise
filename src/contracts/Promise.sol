@@ -24,6 +24,7 @@ contract Promise {
     }
 
     event ServiceCreated(uint id);
+    event ProvidedPrepayment(uint id, uint amount);
 
     function createService(
         uint payment,
@@ -57,6 +58,7 @@ contract Promise {
         require(msg.sender == services[id].user, "Must be send by the user.");
 
         services[id].remaining_payment = msg.value;
+        emit ProvidedPrepayment(id, msg.value);
     }
 
     function provideTask(uint id) public {
@@ -80,6 +82,6 @@ contract Promise {
 
         uint total = services[id].transferred_payment.add(services[id].deposit);
 
-        msg.sender.send(total);
+        msg.sender.transfer(total);
     }
 }
