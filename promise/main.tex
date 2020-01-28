@@ -43,7 +43,7 @@
 \begin{document}
 
 \title{
-\sys: Leveraging Future Gains for Collateral Reduction in Competitive Markets
+\sys: Leveraging Future Gains for Collateral Reduction
 % \sys: Leveraging Future Payments for Bootstrapping Collateralized Protocols
 } 
 \author{
@@ -59,16 +59,19 @@
 %-------------------------------------------------
 
 \begin{abstract}
-\dom{Proposal: change the paper to restrict the mechanism to protocols in which there is competition, i.e. Bob can exit when Alice is malicious. I think one of the biggest problems is that \sys does not work when you have a monopoly situation.}
+% \dom{Proposal: change the paper to restrict the mechanism to protocols in which there is competition, i.e. Bob can exit when Alice is malicious. I think one of the biggest problems is that \sys does not work when you have a monopoly situation.}
 Collateral employed in cryptoeconomic protocols protects against the misbehaviour of economically rational agents, compensating honest users for damages and punishing misbehaving parties.
 %It can increase the trustworthiness of a system by compensating honest users for damages and revoking the locked capital of cheating parties.
 The introduction of collateral, however, carries two disadvantages: (i) requiring actors to lock up substantial amount of collateral can be an entry barrier, limiting the set of candidates to wealthy agents; and (ii) affected agents incur ongoing opportunity costs as the collateral cannot be utilized elsewhere.
 %First, a substantial lockup requirement can act as a barrier to entry for certain protocol roles, limiting the set of candidates to wealthy agents.
 %Second, agents incur ongoing opportunity costs while their collateral is locked up, as it cannot be utilized elsewhere.
 
-We present \sys, a mechanism to decrease the initial capital requirements of economically rational service providers in cryptoeconomic protocols.
-\sys leverages future income (e.g. transaction fees) prepaid by users to reduce the collateral actively locked up by service providers, while sustaining secure operation of the protocol.
-We provide a model for evaluating the effectiveness of \sys and argue its security.
+We present \sys, a mechanism to decrease the initial capital requirements of economically rational service providers in crypt economic protocols.
+The mechanism leverages future income (e.g. service fees) prepaid by users to reduce the collateral actively locked up by service providers, while sustaining secure operation of the protocol.
+\sys is applicable in the context of multiple service providers competing for users.
+We provide a model for evaluating its effectiveness and argue its security.
+Demonstrating \sys's applicability, we discuss how \sys can be integrated into a cross-chain interoperability protocol, XCLAIM, and a second-layer scaling protocol, NOCUST.
+Last, we present an implementation of the protocol on Ethereum showing that all functions of the protocol can be implemented in constant time complexity and function execution costs at most USD 0.02.
 % Lastly, we discuss how \sys can be applied to existing second-layer scaling, blockchain interoperability, and decentralized mining protocols.
 %allowing the required collateral to be constituted by future transaction fees by the user, while \emph{sustaining the overall collateral} required as a security deposit.
 %Using \sys, a user can force a service provider to lock payments as future collateral.
@@ -106,20 +109,17 @@ Yet the trustless nature of the systems means not only that parties \textit{may}
 This creates a design challenge for interactions which would typically involve such trust. 
 % In this paper, we focus on blockchain protocols which, at least in part, express \textit{trust} through \textit{collateral}.
 %Here, collateral is value escrowed by party A to guarantee party B that A will not misbehave given that A's economic gain from cheating is not higher than the collateral value.
-In particular, payment protocols can be designed such that B is guaranteed to receive at least the same amount of funds from A that are at risk.
 % Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
 In this paper, we focus on blockchain protocols which, at least in part, encode \textit{trust} by monetary \textit{collateral}.
 %\dom{Definition is a bit tricky, would change that it not only relates to funds but basically under rationality assumption, A would not cheat.}
-Here, collateral is value escrowed by party A to guarantee party B that regardless of the behavior of party A, party B cannot lose funds. 
+Here, collateral is value escrowed by an agent Alice to guarantee another agent Bob that regardless of the behavior of Alice, Bob cannot lose funds. 
 %It allows us to create systems that are resistant against economically rational adversaries by imposing the threat of destroying their money and motivating their honest behavior.
-Protocols involving collateral include cross-chain communication~\cite{Zamyatin2019XCLAIM}, scalable off-chain payments~\cite{Khalil2019NOCUST}, state channels~\cite{dziembowski2018general}, and watchtowers~\cite{mccorry2018pisa}.
-% avarikioti2019brick avarikioti2018towards
-%, and (decentralized) mining pools.\dom{need citation for smartpool and p2pool}
-% outsourcing of computation and verification games~\cite{teutsch2017scalable}
+In particular, payment, cross-chain, and generic computation protocols can be designed such that Bob is guaranteed to receive at least the same amount of funds from Alice that are at risk.
+Protocols involving collateral include cross-chain communication~\cite{Zamyatin2019XCLAIM}, scalable off-chain payments~\cite{Khalil2019NOCUST}, state channels~\cite{dziembowski2018general}, watchtowers~\cite{mccorry2018pisa,avarikioti2019brick,avarikioti2018towards}, and outsourcing of computation and verification games~\cite{teutsch2017scalable}
 
 % Relying on collateral as a means of trust is associated with a different set of challenges. 
 \paragraph{Problem.}
-Relying on collateral as trust is itself associated with a different set of challenges. 
+Relying on collateral as trust is itself associated with a set of challenges. 
 Collateralization requires the provision of a substantial amount of funds upon protocol initialization, limiting the set of participants to a selected few.
 Leaving participation to a small set of agents can lead to phenomenons like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
 % The concept of equitability in Proof-of-Stake (PoS) protocols explores this phenomenon of the  in this context.
@@ -127,6 +127,7 @@ Leaving participation to a small set of agents can lead to phenomenons like ``ri
 % In the permissionless setting, protocols with collateral should ideally be egalitarian, i.e. agents are able to earn rewards proportional to their deposits~\cite{Karakostas2019Egalitarianism}.
 While it is not possible to grant less wealthy agents proportionally higher rewards due to Sybil identities, we can lower the entry barrier for agents to join a protocol.
 Finally, locked funds result in opportunity costs for the agent who could use their collateral for participating in other protocols~\cite{Harz2019Balance}.
+
 
 % During a bootstrapping phase, the necessary coins for participating in a protocol needs to be distributed ideally to honest agents.
 % However, this is detrimental to the diea of decentralization as 
@@ -144,15 +145,19 @@ The benefit of this scheme is twofold: (i) the intermediary is incentivized to a
 As long as the expected future revenue from correct operation exceeds potential gains by the intermediary, users have the option to leave the protocol, and misbehavior can be proved to the smart contract, \sys incentivizes correct behavior.
 
 \paragraph{Application.}
-We apply \sys to NOCUST.
-NOCUST is a commit-chain protocol that allows to send cryptocurrency payments off-chain facilitated by so-called operators~\cite{Khalil2019NOCUST}.
+We discuss how \sys can be applied to XCLAIM and NOCUST.
+Both protocols are suitable candidates for \sys, as in both protocols ``service providers" are a necessary part.
+XCLAIM is a cross-chain protocol that allows creation of Cryptocurrency-backed Assets (CbA) on an issuing blockchain enabled by a collateralized third-party called a \emph{vault}~\cite{Zamyatin2019XCLAIM}.
+Vaults provide collateral on the issuing blockchain to ensure that it is not economically rational for them to steal the locked cryptocurrency on the backing blockchain.
+NOCUST is a commit-chain protocol that allows to send cryptocurrency payments off-chain facilitated by so-called \emph{operators}~\cite{Khalil2019NOCUST}.
 Operators are service-providing agents that (i) collect fees for operating the off-chain payment network, and (ii) provide a certain amount of collateral to insure finalization of payments.
-We show that with an increasing number of operators, the amount of collateral each operator provides can be \emph{lowered}.
-Moreover, we show that the implementation of \sys in an Ethereum Solidity smart contract only adds XX cost for the user and XX cost for the operator.
+Both, vaults and operators are service providers from the perspective of \sys: (i) any agent can become a service provider by locking a certain amount of collateral, and (ii) agents can earn fees by providing their services. 
+We show that with an increasing number of service providers, the amount of collateral each service provider has to lock, can can be \emph{lowered}.
+Moreover, we show that the implementation of \sys in an Ethereum Solidity smart contract only adds USD 0.01 for the user and USD 0.10 cost for the service provider while being to able to reduce their initial collateral by 90\% over a service period of 10 rounds executing \sys.
 
 \paragraph{Outline.}
 We introduce the system model and assumptions in Section~\ref{sec:model}, followed by a description of \sys in Section~\ref{sec:promise}.
-Next, we discuss the security of \sys in Section~\ref{sec:security}. % and highlight how \sys can be applied to existing systems in Section~\ref{sec:application}.
+Next, we discuss the security of \sys in Section~\ref{sec:security} and highlight how \sys can be applied to existing systems in Section~\ref{sec:application}.
 We discuss related work in Section~\ref{sec:related} and conclude in Section~\ref{sec:conclusion}.
 
 %propose that payments made for successfully completing tasks are made in advance and held in escrow for a period of time determined by a user, sharing the burden of the provision of upfront collateral.
@@ -626,6 +631,17 @@ In this setting we propose to employ \sys as follows: Any fee to be paid by Bob 
 \subsection{Implementation}
 
 We implement \sys in Solidity
+
+createServiceGas: 112196 | USD 0.02895
+provideDepositGas: 43291 | USD 0.01116
+providePrepaymentGas: 43770 | USD 0.0113
+provideTaskGas: 50703 | USD 0.01309
+withdrawMoneyGas: 31788 | USD 0.0082
+
+At 1.5 gwei gas use and exchange rate of USD 172.61 per Eth.
+
+
+
 
 %-------------------------------------------------
 %---------------RELATED WORK------------------------
