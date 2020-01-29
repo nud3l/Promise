@@ -3,8 +3,6 @@
 %\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
 % \usepackage{times}
 \usepackage{amsmath}
-
-%\usepackage{amsmath}
 \usepackage{graphicx}
 %\usepackage{setspace}
 %\usepackage{subfig}
@@ -19,6 +17,8 @@
 
 \usepackage{caption}
 \usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{amssymb}
 \usepackage[]{todonotes}
 
   
@@ -152,12 +152,14 @@ Vaults provide collateral on the issuing blockchain to ensure that it is not eco
 NOCUST is a commit-chain protocol that allows to send cryptocurrency payments off-chain facilitated by so-called \emph{operators}~\cite{Khalil2019NOCUST}.
 Operators are service-providing agents that (i) collect fees for operating the off-chain payment network, and (ii) provide a certain amount of collateral to insure finalization of payments.
 Both, vaults and operators are service providers from the perspective of \sys: (i) any agent can become a service provider by locking a certain amount of collateral, and (ii) agents can earn fees by providing their services. 
-We show that with an increasing number of service providers, the amount of collateral each service provider has to lock, can can be \emph{lowered}.
-Moreover, we show that the implementation of \sys in an Ethereum Solidity smart contract only adds USD 0.01 for the user and USD 0.10 cost for the service provider while being to able to reduce their initial collateral by 90\% over a service period of 10 rounds executing \sys.
+We show that with an increasing number of service providers, the amount of collateral each service provider has to lock, can be \emph{lowered}.
+Moreover, we show that the implementation of \sys in an Ethereum Solidity smart contract only adds USD 0.01 for the user and USD 0.10 cost for the service provider.
+% while being to able to reduce their initial collateral by 90\% over a service period of 10 rounds executing \sys.
 
 \paragraph{Outline.}
 We introduce the system model and assumptions in Section~\ref{sec:model}, followed by a description of \sys in Section~\ref{sec:promise}.
-Next, we discuss the security of \sys in Section~\ref{sec:security} and highlight how \sys can be applied to existing systems in Section~\ref{sec:application}.
+Next, we discuss the security of \sys in Section~\ref{sec:security} and argue in which cases \sys can provide benefits to users and intermediaries in Section~\ref{sec:benefits}.
+Also, we present how \sys can be applied to existing systems in Section~\ref{sec:application}.
 We discuss related work in Section~\ref{sec:related} and conclude in Section~\ref{sec:conclusion}.
 
 %propose that payments made for successfully completing tasks are made in advance and held in escrow for a period of time determined by a user, sharing the burden of the provision of upfront collateral.
@@ -412,16 +414,17 @@ Let $m$ denote the number of payments that Bob makes into escrow $\mathrm{P}$.
 
 Discounting is also introduced, where $0<\delta<1$ denotes the discount factor of an agent's valuation of future utility, i.e. the notion that the future is worth less than the present.
 We argue that an agent can spend received payments somewhere else or potentially invest the payment for a profit.
+The potential profit is encoded with $\mathrm{E}[r]$, as the expected rate of return.
 Hence, the agent faces an opportunity cost for delayed payments.
 % because it is in the future.
 % \rk{"because it is in the future" I really find this too much of a simplification.}
-The pay-offs to Alice are as follows. 
+The pay-offs to Alice, if she follows the same course of action over every round, are as follows. 
 
 \begin{equation}
 \label{eq:time_alice}
 u_A(t) = 
 \begin{cases}
-    \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} ( p - \mathrm{E}[r]D_{I}), & \text{if Alice is honest} \\
+    \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}), & \text{if Alice is honest} \\
     % \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if Alice is honest} \\
     \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I}), & \text{if Alice is malicious} \\
 \end{cases}
@@ -440,7 +443,7 @@ Bob receives the following pay-off, depending on Alice's behaviour.
 \label{eq:time_bob}
 u_B (t) = 
 \begin{cases}
-\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t (V_B - p - \mathrm{E}[r]p(m-t)) - c, & \text{if Alice is honest} \\
+    \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t (\frac{1}{m} V_B - p - (m-t)\mathrm{E}[r]p) - c, & \text{if Alice is honest} \\
 \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^t (D_{I} -V_B -c) , & \text{if Alice is malicious} \\
 \end{cases}
 \end{equation}
@@ -460,14 +463,15 @@ Eq. (\ref{eq:status-quo_alice}) and (\ref{eq:time_alice}) implicitly assume that
 We argue that Bob exits a protocol after being cheated too often, encoded in the function $\beta \to [0,1)$ describing the likelihood that Bob remains in the protocol.
 Each time Bob gets cheated, $n_c$, the lower the probability that Bob continues to participate.
 Each user can have its own $\beta$ function where users might choose to never participate again in a protocol after being cheated once and others might tolerate a higher number of incidents.
-This changes Alice's payoff for the protocol.
+This changes Alice's pay-off for the protocol.
 % Hence, if Alice considers $m$ rounds of the game, she receives the following payoffs:
 
 \begin{equation}
 \label{eq:promise_alice}
 u_A(t) = 
 \begin{cases}
-    \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if Alice is honest} \\
+    \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}), & \text{if Alice is honest} \\
+    %\big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if Alice is honest} \\
     \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (V_A - \mathrm{E}[r]D_{I}-D_{I}), & \text{if Alice is malicious} \\
 \end{cases}
 \end{equation}
@@ -484,9 +488,9 @@ u_A(t) =
 
 
 As $\beta$ decreases, the payoff to Alice converges to $0$ as $n \rightarrow \infty$.
-For Alice, we increase the motivation to behave honestly by (i) providing a sum of payments $mp$ that Bob locks in the protocol, and (ii) the fear of Bob leaving the protocol altogether if she cheats. % as expressed by $\frac{\beta}{n_c}$.
-As Bob chooses $m$ and $\tau$, he has a direct influence on Alice's expected payoff.
-By setting large $m$ and $\tau$ and being able to quit the protocol upon cheating, he can essentially force rational Alice to behave honestly.
+For Alice, we increase the motivation to behave honestly by (i) providing a sum of payments $mp$ that Bob locks in the protocol, and (ii) the fear of Bob leaving the protocol altogether if she acts malicious. % as expressed by $\frack{\beta}{n_c}$.
+As Bob chooses $m$, he has a direct influence on Alice's expected pay-off.
+By setting large $m$ and being able to quit the protocol upon Alice's misbehaviour, he can motivate rational Alice to behave honestly.
 % for cheating converges to $0$, leaves Alice no other rational choice than to act honestly.
 Overall, Alice can join protocols with less initial collateral while providing Bob with the option to use ongoing payments as an additional security measurement.
 % For Alice, we can see that whether she behaves honestly or cheats, if $D_I+p=D$, her payoffs remain the same.
@@ -503,39 +507,65 @@ Overall, Alice can join protocols with less initial collateral while providing B
 \label{sec:security}
 
 % We argue about the security of adding \sys to an existing protocol.
-\sys aims to fulfill the following properties:
+\sys ensures that funds are secure. 
+Payments $p$ (future and current) provided by a user as well as deposits $D$ by intermediaries cannot be stolen. This property is fulfilled by implementing the escrow as a smart contract on a ledger with a functionality and appropriate security parameters as described in~\cite{garay2016bitcoin,gervais2016security}. 
+Apart from this, \sys aims to fulfil the following properties:
 
 \begin{enumerate}
-    \item \textbf{Security of funds}: Payments $p$ (future and current) provided by a user as well as deposits $D$ by intermediaries cannot be stolen. This property is fulfilled by implementing the escrow as a smart contract on a ledger with a functionality and appropriate security parameters as described in~\cite{garay2016bitcoin,gervais2016security}. 
-    \item \textbf{Cost reduction for users}: Bob is able to reduce transaction costs $c$ by paying for multiple rounds $m$ of services for payment $p$ in advance.
-    \item \textbf{Collateral reduction for intermediaries}: Alice is able to provide a lower deposit $D_I$ than the deposit required in a single-shot game setting $D$ while Bob enjoys the same level of security against Alice.
-    \item \textbf{Sybil resistance}: It is not individually rational for Alice to increase her payoff $u$ by cheating Bob in one round and provide the service honestly in the next rounds.
+    \item \textbf{Security equivalence}: Given Def.~\ref{def:security}, introducing \sys to a protocol $\pi$, does not increase the incentive for an intermediary $A$ to behave malicious.
+    \item \textbf{Sybil resistance}: It is not individually rational for Alice to increase her pay-off $u_A$ by creating multiple Sybil identities $A'$ to increase.
 \end{enumerate}
 
-% \subsection{Security of funds}
-% Both Alice and Bob store their funds in escrow.
-% The escrow needs to be securely implemented as a smart contract.
-% % As such, funds are secure given that the underlying ledger functionality is secure.
-% The \sys smart contract is required to monitor the status of the service provided by Alice to Bob, such that any potential safety or liveness failure in the target protocol is detected, and any locked payments held in escrow by the contract are released to Bob upon detection. If no failures are detected during the pre-agreed period, the smart-contract allows Alice to withdraw her earned payments.
 
-% The security of operations performed in this smart contract is determined by the guarantees of the underlying ledger. Extensive discussion of this is outside the scope of this paper and we refer the reader to~\cite{garay2016bitcoin,gervais2016security}. We assume in our work that the safety or liveness provisions of the underlying ledger are not violated. %is operated by an honest majority such that no .
 
-\subsection{Cost Reduction for Users}
-Assume that Alice behaves honestly.
-If a user pays every round $t$ for the service provided by Alice, then his payoff per round is $V_B - p - c$. % where $V_B$ is his private value for getting the service, $p$ the payment he makes and $c$ the cost for doing the payment.
-However, locking multiple payments incurs opportunity cost.
-This cost is lowered at every time step as the payments are assigned to the intermediary.
-Hence, Bob starts with an opportunity cost of $\mathrm{E}[r]pm$ at $t=0$ and $\mathrm{E}[r]p(m-1)$ at $t=1$.
-Generalizing this for $t$ rounds, leaves us with $\mathrm{E}[r]p(m-t)$. % at every time step $t$. % from today's perspective.
-The user locks future payments when the sum of the transaction costs $c$ for $m$ payments is greater than the opportunity cost for locking additional payments plus the single transaction cost for making the prepayments.
-Hence, the boundary for a user to choose \sys as individually rational choice maximizing his payoff is given by:
+\subsection{Security equivalence}
 
+We argue that $\pi_{\mathrm{P}}$ and $\pi$ are equivalent in terms of security considering an economically rational intermediary $A$.
+
+\begin{theorem}[Security equivalance]
+\label{thm:security}
+Given an economically rational intermediary $A$ with a private valuation $V_A$ and an unknown termination probability $\beta$, a cryptoeconomic protocol with \sys, $\pi_{\mathrm{P}}$, is secure if $A$'s utility $u_A$ for behaving honest is higher than her utility for being malicious.  
+\end{theorem}
+
+To prove Theorem~\ref{thm:security}, we consider both action choices of Alice.
+Given Eq.~(\ref{eq:promise_alice}), Alice has different pay-offs depending on her being honest or malicious.
+We can calculate the decision bound for Alice's individually rational choice to cheat Bob by comparing the two options.
+\begin{equation}
+\label{eq:decision-bound-alice-full}
+     \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}) = 
+    \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (V_A - \mathrm{E}[r]D_{I}-D_{I})
+\end{equation}
+
+Using Eq.~(\ref{eq:decision-bound-alice-full}) above, we can determine a decision bound based on the $\beta$ function of Alice to behave honestly.
+The $\beta$ function, in turn, determines how large the initial deposit $D_I$ needs to be to prevent Alice from cheating.
+
+\begin{proof}
+Assume $A$ is individually rational, $A$ will choose an action based on the highest pay-off.
+We re-arrange Eq.~(\ref{eq:decision-bound-alice-full}) for $\beta$:
 \begin{align}
-\label{eq:decision-bound-user}
-    \sum_{t=1}^m \big( \frac{\delta}{1+r} \big)^t c = \sum_{t=0}^m \big( \frac{\delta}{1+r} \big)^t \mathrm{E}[r]p(m-t)
+    \label{eq:decision-bound-beta}
+    \beta = \frac{\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I})}{\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I})} 
 \end{align}
+From Eq.~(\ref{eq:decision-bound-beta}), we can notice that the smaller $\beta$ becomes, the smaller the pay-off for being malicious for $A$ becomes.
+Hence, if $\beta \to 0$, $A$ has no incentive to be malicious and should behave honest.
+However, if $\beta \to 1$, Alice's incentive to be malicious is largely determined by the $V_A-\mathrm{E}[r]D_I - D_I$ term.
+Further, we can clearly see that at $\beta=1$, Eq.~(\ref{eq:decision-bound-beta}) and Eq.~(\ref{eq:time_alice}) are equivalent.
+From this follows that if $\beta \to 1$ then the initial deposit locked must also approach the deposit locked as without \sys, i.e. $D_I \to D$.
+As long as $\beta$ and $D_I$ are set such that the utility for $A$ to behave honestly is greater, a protocol implying \sys is considered secure.
+\end{proof}
 
-% Provided the left hand side of Eq. (\ref{eq:decision-bound-user}) is greater, Bob should use \sys to lock multiple payments $pm$ as it is his individually rational choice that maximizes his payoff $u_B$.
+
+Of course, $A$ has an interest to lower the initial deposit $D_I$, so it is hard for the user to determine if $D_I$ is set adequately.
+In a practical setting, for example in payment channels or commit-chains, $D_I$ can be set to exactly the value $V_B$ that the user associates with the task.
+The additional payments can then be used to increase the amount of transactions that can be made through the payment channel or the amount of assets that can be finalized via the commit-chain.
+
+
+% We can re-arrange this equation to determine $\beta$:
+% \begin{equation}
+%     \label{eq:beta}
+%     \beta = \frac{\big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1)}{\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I})}
+% \end{equation}
+% 
 
 \subsection{Collateral Reduction and Sybil Resistance}
 
@@ -592,6 +622,46 @@ For simplicity of argument, we assume that Bob is indifferent if he pays in Bitc
 If Bob would be cheated on by an intermediary in NOCUST, he could switch to using the Lightning Network.
 In turn, Bob can set $\beta$ to 0.
 In these cases we can substantially lower the initial collateral $D_I$ using Eq. (\ref{eq:d_initial}).
+\section{Economic Benefits}
+\label{sec:benefits}
+
+\begin{enumerate}
+    \item \textbf{Cost reduction for users}: Bob is able to reduce transaction costs $c$ by paying for multiple rounds $m$ of services for payment $p$ in advance.
+    \item \textbf{Collateral reduction for intermediaries}: Alice is able to provide a lower deposit $D_I$ than the deposit required in a single-shot game setting $D$ while Bob enjoys the same level of security against Alice.
+\end{enumerate}
+
+% \subsection{Security of funds}
+% Both Alice and Bob store their funds in escrow.
+% The escrow needs to be securely implemented as a smart contract.
+% % As such, funds are secure given that the underlying ledger functionality is secure.
+% The \sys smart contract is required to monitor the status of the service provided by Alice to Bob, such that any potential safety or liveness failure in the target protocol is detected, and any locked payments held in escrow by the contract are released to Bob upon detection. If no failures are detected during the pre-agreed period, the smart-contract allows Alice to withdraw her earned payments.
+
+% The security of operations performed in this smart contract is determined by the guarantees of the underlying ledger. Extensive discussion of this is outside the scope of this paper and we refer the reader to~\cite{garay2016bitcoin,gervais2016security}. We assume in our work that the safety or liveness provisions of the underlying ledger are not violated. %is operated by an honest majority such that no .
+
+\subsection{Cost Reduction for Users}
+Assume that Alice behaves honestly.
+If a user pays every round $t$ for the service provided by Alice, then his pay-off per round is $V_B - p - c$ as described in Eq. (\ref{eq:status-quo_bob}). % where $V_B$ is his private value for getting the service, $p$ the payment he makes and $c$ the cost for doing the payment.
+However, locking multiple payments incurs opportunity cost.
+This cost is lowered at every time step as the payments are assigned to the intermediary, as expressed in Eq.~(\ref{eq:time_bob}).
+
+Bob starts with an opportunity cost of $\mathrm{E}[r]pm$ at $t=0$. 
+The opportunity cost is reduced to $\mathrm{E}[r]p(m-1)$ at $t=1$ as the payment is allocated to Alice.
+Generalizing this for $t$ rounds, leaves us with $\mathrm{E}[r]p(m-t)$ at every time step $t$ from today's perspective.
+
+The user locks future payments when the sum of the transaction costs $c$ for $m$ payments is greater than the opportunity cost for locking additional payments plus the single transaction cost for making the prepayments.
+Hence, the boundary for a user to choose \sys as individually rational choice maximizing his pay-off is given by:
+
+\begin{align}
+    \sum_{t=1}^m \big( \frac{\delta}{1+r} \big)^t c = \sum_{t=0}^m \big( \frac{\delta}{1+r} \big)^t \mathrm{E}[r]p(m-t)
+\end{align}
+\begin{align}
+\label{eq:decision-bound-user}
+c = \mathrm{E}[r]p(m-t)    
+\end{align}
+
+Provided the right hand of Eq. (\ref{eq:decision-bound-user}) is smaller, Bob should use \sys to lock multiple payments $pm$ as it is his individually rational choice that maximizes his pay-off $u_B$.
+
+
 
 
 
@@ -605,7 +675,8 @@ In these cases we can substantially lower the initial collateral $D_I$ using Eq.
 \section{Applications}
 \label{sec:application}
 
-In this section we show how applying \sys to a set of popular protocols can improve them.
+In this section we apply \sys to the NOCUST and XCLAIM protocols.
+We show analytically how \sys is able to reduce the initial amount of locked deposits.
 % \aza{Shorten this to 1 paragraph and rather add 2 more applications! For the paper, it is better to even have a single paragraph, but highlight multiple protocols - rather than going into detail on 1 specific.}
 
 \subsection{NOCUST}
@@ -638,16 +709,26 @@ Bob, using her services, is able to lock the future payments of Alice to allow h
 
 \subsection{Implementation}
 
-We implement \sys in Solidity
+We implement \sys in Solidity in around 100 LoC.
+We use the implementation to experimentally assess the cost of executing the contract functions.
+Our cost calculations are summarised in Table~\ref{tab:implementation} based on an Ether exchange rate of USD 172.61 and 1.5 Gwei gas price.
+The implementation is available as an open source project\footnote{\url{https://github.com/nud3l/Promise/tree/master/src}}.
 
-createServiceGas: 112196 | USD 0.02895
-provideDepositGas: 43291 | USD 0.01116
-providePrepaymentGas: 43770 | USD 0.0113
-provideTaskGas: 50703 | USD 0.01309
-withdrawMoneyGas: 31788 | USD 0.0082
-
-At 1.5 gwei gas use and exchange rate of USD 172.61 per Eth.
-
+\begin{table}[h]
+\centering
+\caption{Overview of \sys functions and their cost.}
+\label{tab:implementation}
+\begin{tabularx}{\textwidth}{lXll}
+\toprule 
+\textbf{Function} & \textbf{Description} & \textbf{Gas cost} & \textbf{Cost} \\ \toprule
+create & Setup function. & 112196 & USD 0.02895 \\ 
+deposit & Called by intermediary to provide deposit. & 43291 & USD 0.01116 \\
+payment & Called by user to provide pre-payment. & 43770 & USD 0.0113 \\ \midrule
+deliver & Called as part of task provision. & 50703 & USD 0.01309 \\ \midrule
+withdraw & Called by intermediary after the service period is up to receive payment and deposit. & 31788 & USD 0.0082 \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 
 
