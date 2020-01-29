@@ -567,48 +567,48 @@ The additional payments can then be used to increase the amount of transactions 
 % \end{equation}
 % 
 
-\subsection{Collateral Reduction and Sybil Resistance}
+\subsection{Sybil Resistance}
 
 % Alice reduces her initial collateral with \sys.% from $D$ to $D_I$ where $D_I < D$.
 % While this lowers her entry barrier, arguably this makes it easier for Alice to cheat in the protocol as she has less at stake.
 % By introducing $\beta$ we Alice's desire to cheat is reduced.
 % More formally, 
-We can calculate the decision bound for Alice's individually rational choice to cheat Bob by comparing the two options in Eq. (\ref{eq:promise_alice}).
+%We can calculate the decision bound for Alice's individually rational choice to cheat Bob by comparing the two options in Eq. (\ref{eq:promise_alice}).
 % \begin{equation}
 %     \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1) =
 %     \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (V_A - \mathrm{E}[r]D_{I}-D_{I})
 % \end{equation}
-We can re-arrange this equation to determine $\beta$:
-\begin{equation}
-    \label{eq:beta}
-    \beta = \frac{\big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1)}{\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I})}
-\end{equation}
+%We can re-arrange this equation to determine $\beta$:
+%\begin{equation}
+%    \label{eq:beta}
+%    \beta = \frac{\big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1)}{\sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I})}
+%\end{equation}
 % \dom{re-arrange for $\beta$}
 
-Similarly, Bob can determine how high $D_I$ should be under the assumption that he knows $V_A$ and the parameters $r$ and $\delta$.
+%Similarly, Bob can determine how high $D_I$ should be under the assumption that he knows $V_A$ and the parameters $r$ and $\delta$.
 
 % \dom{re-arrange for $D_I$}
-\begin{equation}
-    \label{eq:d_initial}
-    D_I = \frac{\big( \frac{\delta}{1+r} \big)^{m} pm - \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta V_A}{ ((1+\mathrm{E}[r])^{m}-1) - \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (\mathrm{E}[r]-1)}
-\end{equation}
+%\begin{equation}
+%    \label{eq:d_initial}
+%    D_I = \frac{\big( \frac{\delta}{1+r} \big)^{m} pm - \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta V_A}{ ((1+\mathrm{E}[r])^{m}-1) - \sum_{t=0}^{m} \big( \frac{\delta}{1+r} \big)^{t} \beta (\mathrm{E}[r]-1)}
+%\end{equation}
 
-Assuming that $\beta$ is lowered aggressively, i.e.\ Bob tolerates only few task violations $n_c$, Alice  chooses to be honest as this maximizes her payoff.
-Being honest with a reduced collateral $D_I$ is thereby the individually rational choice.
-Given that Bob is aware for the involved parameters $V_A$, $r$, and can set the parameters $p$ and $m$ himself, Bob is able to calculate at which likelihood he should exit a given protocol given by Eq. (\ref{eq:beta}).
-Similarly, Bob can decide which level of colalteral $D_I$ is sufficent for him using Eq.(\ref{eq:d_initial}).
+%Assuming that $\beta$ is lowered aggressively, i.e.\ Bob tolerates only few task violations $n_c$, Alice  chooses to be honest as this maximizes her payoff.
+% Being honest with a reduced collateral $D_I$ is thereby the individually rational choice.
+% Given that Bob is aware for the involved parameters $V_A$, $r$, and can set the parameters $p$ and $m$ himself, Bob is able to calculate at which likelihood he should exit a given protocol given by Eq. (\ref{eq:beta}).
+% Similarly, Bob can decide which level of colalteral $D_I$ is sufficent for him using Eq.(\ref{eq:d_initial}).
 
 % \subsection{Sybil resistance}
-\subsubsection{Sybil Identities}
+%\subsubsection{Sybil Identities}
 We argue that if $\beta$ is lowered aggressively, Alice can do no better than being honest.
 However, if there is a non-negligible probability that Bob remains in the protocol after being cheated once, Alice can try to create a Sybil identity $A'$ to (i) cheat Bob in round $t=0$ and (ii) behave honestly in round $1$ to $m+1$.
 Hence, Bob can only be sure to prevent Alice from executing a Sybil attack, if $\beta = 0$.
 
 \subsection{Beta Factor Over Time}
 The $\beta$ factor set by Bob is the crucial security parameter for Bob given we are in a permissionless system.
-We argue that setting the $\beta$ factor depends on Bob's reliance on participating in a protocol.
-If Bob \emph{requires} the service Alice provides and there is \emph{no alternative} to the protocol in which Alice operates, Bob is faced with a \emph{monopoly}.
-In a monopoly Bob $\beta$ likely never approaches 0 as Bob is forced to tolerate Alice's misbehavior.
+We argue that setting the $\beta$ factor depends on Bob's reliance on participating in a protocol with a specific intermediary.
+If Bob \emph{requires} the service Alice provides and there is \emph{no alternative} within the same protocol in which Alice operates, Bob is faced with a \emph{monopoly}.
+In a monopoly Bob $\beta$ likely never approaches 0 as Bob is forced to tolerate Alice's misbehaviour.
 To protect Bob, \sys requires that $D_I$ of Alice is close or equal to $D$ in a monopoly.
 % Otherwise, Alice can create Sybil attacks on Bob or just outright cheat every round as Bob would try to use the service over and over.
 
@@ -616,12 +616,11 @@ The opposite market situation is \emph{perfect competition}.
 Bob can choose from a wide selection of service providers to interact with\footnote{
 However, as we lack strong identities, these service providers could all be Sybil identities of Alice.
 Recognizing that perfect competition exists is a challenging task and we leave this as future work.}.
-Assuming perfect competition exists, Bob has the choice to leave a protocol any time.
-As an example, we could imagine Bob choosing between using a payment hub like NOCUST or a payment channel network like Lighting to obtain scalable and cheap payments.
-For simplicity of argument, we assume that Bob is indifferent if he pays in Bitcoin or Ether.
-If Bob would be cheated on by an intermediary in NOCUST, he could switch to using the Lightning Network.
+Assuming perfect competition exists, Bob has the choice to pick another intermediary any time.
+As an example, we could imagine Bob choosing between several operators in NOCUST or vaults in XCLAIM.
+If Bob would be cheated on by an intermediary in NOCUST, he could switch to using another ooperator.
 In turn, Bob can set $\beta$ to 0.
-In these cases we can substantially lower the initial collateral $D_I$ using Eq. (\ref{eq:d_initial}).
+In these cases, we can substantially lower the initial collateral $D_I$ using Eq. (\ref{eq:decision-bound-beta}).
 \section{Economic Benefits}
 \label{sec:benefits}
 
