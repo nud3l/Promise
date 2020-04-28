@@ -47,7 +47,9 @@
 % \sys: Leveraging Future Payments for Bootstrapping Collateralized Protocols
 } 
 \author{
-\institute{}
+Dominik Harz, Lewis Gudgeon, Rami Khalil, Alexei Zamyatin
+\institute{
+Department of Computing, Imperial College London}
 }
 
 
@@ -66,7 +68,7 @@ The introduction of collateral, however, carries two disadvantages: (i) requirin
 %First, a substantial lockup requirement can act as a barrier to entry for certain protocol roles, limiting the set of candidates to wealthy agents.
 %Second, agents incur ongoing opportunity costs while their collateral is locked up, as it cannot be utilized elsewhere.
 
-We present \sys, a mechanism to decrease the initial capital requirements of economically rational service providers in crypt economic protocols.
+We present \sys, a mechanism to decrease the initial capital requirements of economically rational service providers in cryptoeconomic protocols.
 The mechanism leverages future income (e.g. service fees) prepaid by users to reduce the collateral actively locked up by service providers, while sustaining secure operation of the protocol.
 \sys is applicable in the context of multiple service providers competing for users.
 We provide a model for evaluating its effectiveness and argue its security.
@@ -121,7 +123,7 @@ Protocols involving collateral include cross-chain communication~\cite{Zamyatin2
 \paragraph{Problem.}
 Relying on collateral as trust is itself associated with a set of challenges. 
 Collateralization requires the provision of a substantial amount of funds upon protocol initialization, limiting the set of participants to a selected few.
-Leaving participation to a small set of agents can lead to phenomenons like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
+Leaving participation to a small set of agents can lead to phenomena like ``rich are getting richer'' through wealth compounding~\cite{Fanti2019Compounding}.
 % The concept of equitability in Proof-of-Stake (PoS) protocols explores this phenomenon of the  in this context.
 % Wealthy agents are able to earn an absolutely larger proportion of the rewards as their likelihood to earn is increased by their amount of collateral.
 % In the permissionless setting, protocols with collateral should ideally be egalitarian, i.e. agents are able to earn rewards proportional to their deposits~\cite{Karakostas2019Egalitarianism}.
@@ -140,7 +142,7 @@ Instead of locking up a significant amount of funds as collateral, \sys allows i
 Similar to online orders in e-commerce, users can choose to pay fees upfront (``forward payments") -- for a some pre-agreed service period.
 However, instead of transferring these payments directly to the intermediary, users lock pre-paid fees in a escrow smart contact, preventing theft by either party. 
 The intermediary needs to provide the service honestly for the entire period set by the user.
-The benefit of this scheme is twofold: (i) the intermediary is incentivized to act honestly while enjoying a lower initial collateral, and (ii) the user can reduce his transaction cost and only pays if the service was provided honestly over his defined period. %, authorized by the smart contract, 
+The benefit of this scheme is two-fold: (i) the intermediary is incentivized to act honestly while enjoying a lower initial collateral, and (ii) the user can reduce his transaction cost and only pays if the service was provided honestly over his defined period. %, authorized by the smart contract, 
 %can leverage the pre-paid funds as collateral to maintain secure operation, reducing the liquidity necessary to launch such services; (ii) the user, on the other hand, can be incentivized via a lower fee rate.
 As long as the expected future revenue from correct operation exceeds potential gains by the intermediary, users have the option to leave the protocol, and misbehavior can be proved to the smart contract, \sys incentivizes correct behavior.
 
@@ -301,7 +303,7 @@ In our model, we assume that agents are economically rational and self-intereste
 An agent will therefore decide on a course of action depending on the utility associated with those actions.
 We use a simplified model here, were the intermediary Alice can choose between two actions and Bob has no choice once he committed to the agreement $\mathcal{A}$.
 
-Alice can either behave honestly or malicious, with the following pay-offs one period ahead.
+Alice can either behave honestly or malicious, with the following payoffs one period ahead.
 $V_A$ denotes the numerical value that Alice attaches to being malicious, where $V_A \geq 0$.
 We chose to only include a valuation to the malicious side to Alice as Alice could e.g. be bribed to be malicious.
 This is a worst case assumption: Alice can only be influenced increasing her incentive to misbehave.
@@ -418,7 +420,7 @@ The potential profit is encoded with $\mathrm{E}[r]$, as the expected rate of re
 Hence, the agent faces an opportunity cost for delayed payments.
 % because it is in the future.
 % \rk{"because it is in the future" I really find this too much of a simplification.}
-The pay-offs to Alice, if she follows the same course of action over every round, are as follows. 
+The payoffs to Alice, if she follows the same course of action over every round, are as follows. 
 
 \begin{equation}
 \label{eq:time_alice}
@@ -528,7 +530,7 @@ Given an economically rational intermediary $A$ with a private valuation $V_A$ a
 \end{theorem}
 
 To prove Theorem~\ref{thm:security}, we consider both action choices of Alice.
-Given Eq.~(\ref{eq:promise_alice}), Alice has different pay-offs depending on her being honest or malicious.
+Given Eq.~(\ref{eq:promise_alice}), Alice has different payoffs depending on her being honest or malicious.
 We can calculate the decision bound for Alice's individually rational choice to cheat Bob by comparing the two options.
 \begin{equation}
 \label{eq:decision-bound-alice-full}
