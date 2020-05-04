@@ -635,12 +635,17 @@ This yields:
 However, if we consider that Alice wants to participate in $m$ rounds, we can express this based on Eq.~(\ref{eq:beta_alice}) and solving for $\rho$.
 However, we argue that under the assumption of Eq.~(\ref{eq:decision_promise_alice}), Alice's decision is essentially between participating a single round and not fulfilling the specification, or participating multiple rounds over the pre-agreed period $m$ while adhering to the specification.
 To calculate Alice's decision bound, we are assuming that from Eq.~(\ref{eq:single_round_reduction}) the first reduction is set to the lowest possible value.
-This means that the term $\beta(n)V_A - p + \mathrm{E}[r]p - D_I = 0$, i.e., at the decision bound Alice is undecided if she should fulfill the specification since the utilitieis for both choices are equal.
-Thus, $\rho$ can be expressed as (see also Appendix~\ref{app:decision-bound}):
+This means that the term $\beta(n)V_A - p + \mathrm{E}[r]p - D_I = 0$, i.e., at the decision bound Alice is undecided if she should fulfill the specification since the utilities for both choices are equal.
+Thus, $\rho$ can be expressed as:
 \begin{equation}
     \label{eq:multi_round_reduction}
-    \rho =  \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]}
+    \rho = \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - (t+1)\mathrm{E}[r]p - \mathrm{E}[r]D)
+    % \rho =  \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]}
 \end{equation}
+
+In Section~\ref{sec:xclaim} we give an example how collateral is lowered given a set of parameters.
+Note that to calculate the collateral reduction, both the service provider and the user only need to know the prior collateral requirement $D$ as defined by $\pi$.
+For example, in XCLAIM this is 200\%.
 
 
 % \begin{equation}
@@ -821,6 +826,7 @@ Further, we give a sketch how \sys can be implemented in NOCUST.
 % \aza{Shorten this to 1 paragraph and rather add 2 more applications! For the paper, it is better to even have a single paragraph, but highlight multiple protocols - rather than going into detail on 1 specific.}
 
 \subsection{XCLAIM}
+\label{sec:xclaim}
 
 XCLAIM is a protocol that allows users to transfer assets between heterogeneous decentralized ledgers using a collateralized service provider called a vault~\cite{Zamyatin2019XCLAIM}.
 Instead of relying on a trusted third party like a centralized exchange, the vault must provide collateral to ensure that it does not steal the coins it holds in custody.
@@ -853,20 +859,36 @@ Given the parameters, \sys can be integrated as follows.
 \paragraph{Cost Reduction}
 For simplicity, we are going to denote all monetary amounts in BTC.
 In XCLAIM, a vault would have to provide the equivalent of 2 BTC in collateral to hold custody over 1 BTC in value.
-We are using Eq.~(\ref{eq:multi_round_reduction}) to explore the reduction factor $\rho$.
+First, we calculate the possible $D_I$ collateral given Eq.~(\ref{eq:single_round_reduction}).
+This gives us the minimum collateral required to also protect against a \textit{vault that plays a single-shot game}.
+For simplicity, we are assuming that the vault has an incentive of 1 to steal the BTC (the current value of the Bitcoin) as well as a hidden motivation to steal BTC such that $V_A = D = 2$.
+Moreover, the vault is not interested in any future collaboration with the user, hence $\beta(n) = 1$.
+Last, we divide the 3.75\% APR through 365 days to get the average return.
+
+\begin{equation}
+\begin{split}
+    \rho &= p - \mathrm{E}[r]p + D - \beta(n) V_A\\
+    \rho &= 0.009375 - \frac{0.0375}{365} 0.0093750 + 2 - 2\\
+    \rho &= 0.00937404
+\end{split}
+\end{equation}
+
+Second, we are using Eq.~(\ref{eq:multi_round_reduction}) to explore the reduction factor $\rho$ if the \textit{vault plays a sequential game}.
 Note that, at a minimum, a vault has at least a private value of $V_A$ to not follow the specification of XCLAIM: if the vault can take the 1 BTC and is punished with less collateral $D_I$ being taken away, it is incentive compatible for the vault to take the 1 BTC. Using the example values above, we calculate $\rho$ as:
 
 \begin{equation}
 \begin{split}
-\rho &=  \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]} \\
-\rho &=  \frac{\sum_{t=0}^{9} \big( \frac{0.95}{1.0375} \big)^{t} ( 0.9375 - t 0.03515625)  - 1 + 2 - \sum_{t=1}^{9} \big( \frac{0.95}{1.0375} \big)^{t} 0.075}{1 - \sum_{t=1}^{9} \big( \frac{0.95}{1.0375} \big)^{t} 0.0375} \\
-\rho &= 7.90258
+\rho &= \sum_{t=0}^{9} \big( \frac{\delta}{1+r} \big)^{t} ( p - (t+1)\mathrm{E}[r]p - \mathrm{E}[r]D) \\
+\rho &= \sum_{t=0}^{9} \big( \frac{\delta}{1+r} \big)^{t} ( 0.009375 - (t+1)\frac{0.0375}{365}0.009375 - \frac{0.0375}{365}*2)
 \end{split}
 \end{equation}
 
-This means that we could reduce the collateral by 7.9.
-However, the collateral needs to remain above 1.0 to secure against vault making a single-shot choice.
-So, in practice, we could lower the collateral to 1.5 while being able to withstand potential cryptocurrency price fluctuations and use future payments as additional collateral.
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{promise/figures/collateral-reduction.pdf}
+    \caption{Caption}
+    \label{fig:collateral}
+\end{figure}
 
 % \dom{
 % \begin{itemize}
@@ -992,24 +1014,24 @@ The authors would like to thank Arthur Gervais and William Knottenbelt for their
 \bibliographystyle{splncs04}
 \bibliography{bib/blockchain,bib/references}
 
-\appendix
+% \appendix
 
-\section{Decision Boundary}
-\label{app:decision-bound}
+% \section{Decision Boundary}
+% \label{app:decision-bound}
 
-We determine the decision boundary for the cost reduction parameter $\rho$ from Eq.~(\ref{eq:beta_alice}):
+% We determine the decision boundary for the cost reduction parameter $\rho$ from Eq.~(\ref{eq:beta_alice}):
 
 
-\begin{equation}
-\begin{split}
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}) &= V_A - \mathrm{E}[r]D_{I}-D_{I}  \\
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r](D-\rho)) &= V_A - \mathrm{E}[r](D-\rho)-D+\rho \\
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p) - V_A + D &= \rho - \mathrm{E}[r](D-\rho) + \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r](D-\rho) \\
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D  &= \rho + \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r](D-\rho) \\
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D &= \rho - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]\rho \\
-    \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{\rho} &= 1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r] \\
-    \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]} &= \rho  \\
-\end{split}
-\end{equation}
+% \begin{equation}
+% \begin{split}
+%     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}) &= V_A - \mathrm{E}[r]D_{I}-D_{I}  \\
+%     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r](D-\rho)) &= V_A - \mathrm{E}[r](D-\rho)-D+\rho \\
+%     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p) - V_A + D &= \rho - \mathrm{E}[r](D-\rho) + \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r](D-\rho) \\
+%     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D  &= \rho + \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r](D-\rho) \\
+%     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D &= \rho - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]\rho \\
+%     \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{\rho} &= 1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r] \\
+%     \frac{\sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p)  - V_A + D - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]D}{1 - \sum_{t=1}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} \mathrm{E}[r]} &= \rho  \\
+% \end{split}
+% \end{equation}
 
 \end{document}
