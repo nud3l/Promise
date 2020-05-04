@@ -481,7 +481,7 @@ The payoffs to Alice, if she follows the same course of action over every round,
 \label{eq:time_alice}
 u_A(t) = 
 \begin{cases}
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}), & \text{if $\Phi=1$} \\
+    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - (t+1)\mathrm{E}[r]p -\mathrm{E}[r]D_{I}), & \text{if $\Phi=1$} \\
     % \big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if $\Phi=1$} \\
     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} (V_A - \mathrm{E}[r]D_{I}-D_{I}), & \text{if $\Phi=0$} \\
 \end{cases}
@@ -528,7 +528,7 @@ This changes Alice's pay-off for the protocol as follows.
 \label{eq:beta_alice}
 u_A(t) = 
 \begin{cases}
-    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - t\mathrm{E}[r]p -\mathrm{E}[r]D_{I}), & \text{if $\Phi=1$} \\
+    \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} ( p - (t+1)\mathrm{E}[r]p -\mathrm{E}[r]D_{I}), & \text{if $\Phi=1$} \\
     %\big( \frac{\delta}{1+r} \big)^{m} pm - D_{I}((1+\mathrm{E}[r])^{m}-1), & \text{if $\Phi=1$} \\
     \sum_{t=0}^{m-1} \big( \frac{\delta}{1+r} \big)^{t} (\beta(n) V_A - \mathrm{E}[r]D_{I}-D_{I}), & \text{if $\Phi=0$} \\
 \end{cases}
@@ -613,7 +613,7 @@ We now show that if this holds, Alice should continue with the same course of ac
 0375+
 If if at any point $k \in m$, Alice decides to stop adhering to the specification she will receive the following pay-off:
 \begin{equation}
-    u_A(t,k) = \sum^{k-1}_{t=0} \big(\frac{\delta}{1+r} \big)^{t} (- t\mathrm{E}[r]p -\mathrm{E}[r]D_{I})+\big(\frac{\delta}{1+r} \big)^{t} (\beta(n) V_A - \mathrm{E}[r]D_{I}-D_{I})
+    u_A(t,k) = \sum^{k-1}_{t=0} \big(\frac{\delta}{1+r} \big)^{t} (- (t+1)\mathrm{E}[r]p -\mathrm{E}[r]D_{I})+\big(\frac{\delta}{1+r} \big)^{t} (\beta(n) V_A - \mathrm{E}[r]D_{I}-D_{I})
 \end{equation}
 Alice has locked her collateral $D_I$ for multiple rounds as well as the payments she should have received.
 Due to her actions she gains $V_A$ but for each round she has locked more payments and collateral, the higher her cost to change her choices of action w.r.t. the specification.
