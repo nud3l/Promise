@@ -1,0 +1,31 @@
+\begin{figure}[h!]
+    \centering
+    \resizebox{1\textwidth}{!}{
+    \begin{forest}
+    for tree={
+    draw,
+    font=\footnotesize,
+    grow=east, 
+    inner sep=0.5em, 
+    s sep=0.1cm, 
+    l sep=4.5cm,
+    align=center, 
+    edge={->, line width=1.5pt, color=blue},
+    for children={fit=tight, anchor=base west}
+    }
+    [{$t=0$}, name=rootnode,
+        [{$t=1$}, name=L2, edge label={node[midway,sloped,above,color=blue]{$p-\mathrm{E}[r]p-\mathrm{E}[r]D_I$}}
+            [{$t=2$}, name=L3, edge label={node[midway,above,color=blue]{$\sum^1_0(\frac{\delta}{1+r})^t(p-\mathrm{E}[r]p-\mathrm{E}[r]D_I)$}}
+            ]
+        ]
+    ]
+    % \draw[->,color=blue, line width=1.5pt] (L3) to[out= north east,in=north west] node[below] {$\sigma_d$} node[above] {$p-c_A-\mathrm{E}[rD_3]$} (L3);
+    \draw[->,dotted,color=red, line width=1.5pt] (L2) to[out=south east,in=south west] node[below] {$-\mathrm{E}[r]p-\mathrm{E}[r]D_I+(\frac{\delta}{1+r})(V_A-\mathrm{E}[rD_I]-D_I)$} (rootnode);
+    % \draw[->,dotted,color=red, line width=1.5pt] (L3) to[out=south east,in=south west] node[above] {$\sigma_u$} node[below] {$v-c_A-\mathrm{E}[rD_3]-D_3$} (rootnode);
+    \draw[->,dotted,color=red,line width=1.5pt] (rootnode) to[out=north east,in=north west] node[above] {$V_A-\mathrm{E}[rD_I]-D_I$} (rootnode);
+    \end{forest}}
+    % \vspace{-2em}
+    \caption{Depicting the sum of utilities depending on different action choices made by Alice. At $t=0$ Alice can choose between fulfilling the specification and receive the utility depicted in blue or choose the opposite and receive the utility depicted in red. If Alice at any point prefers to violate the specification, the game restarts and the action choices are essentially back to the $t=0$ state. Furthermore, at $t=1$, Alice will already have committed to adhering to the specification. In case Alice decides to misbehave at this point, she will not receive $p$ that she was allocated when she transitioned to $t_1$. However, if she decides to continue to fulfill the specification, she will be rewarded with an additional payment allocation. This game continues until $t=m$.}
+    %Payoffs corresponding to no action, $\sigma_p \in \emptyset$, are excluded as doing nothing would yield negative utility for an agent and therefore a rational agent would not choose this option.
+    \label{fig:payoffstree}
+\end{figure}
