@@ -866,6 +866,7 @@ Moreover, the vault is not interested in any future collaboration with the user,
 Last, we divide the 3.75\% APR through 365 days to get the average return.
 
 \begin{equation}
+\label{eq:xclaim_single}
 \begin{split}
     \rho &= p - \mathrm{E}[r]p + D - \beta(n) V_A\\
     \rho &= 0.009375 - \frac{0.0375}{365} 0.0093750 + 2 - 2\\
@@ -877,16 +878,30 @@ Second, we are using Eq.~(\ref{eq:multi_round_reduction}) to explore the reducti
 Note that, at a minimum, a vault has at least a private value of $V_A$ to not follow the specification of XCLAIM: if the vault can take the 1 BTC and is punished with less collateral $D_I$ being taken away, it is incentive compatible for the vault to take the 1 BTC. Using the example values above, we calculate $\rho$ as:
 
 \begin{equation}
+\label{eq:xclaim_multi}
 \begin{split}
 \rho &= \sum_{t=0}^{9} \big( \frac{\delta}{1+r} \big)^{t} ( p - (t+1)\mathrm{E}[r]p - \mathrm{E}[r]D) \\
 \rho &= \sum_{t=0}^{9} \big( \frac{\delta}{1+r} \big)^{t} ( 0.009375 - (t+1)\frac{0.0375}{365}0.009375 - \frac{0.0375}{365}*2)
 \end{split}
 \end{equation}
 
+\paragraph{Discussion}
+
+We plot the results from Eq.~(\ref{eq:xclaim_single}) and~(\ref{eq:xclaim_multi}) in Figure~\ref{fig:collateral}.
+The collateral reduction $\rho$ can be subtracted from $D$.
+In practice, the user and the service provider can agree on the desired reduction.
+We note three findings:
+(i) If the user and the service provider want to maintain security w.r.t. no additional incentive for the service provider to violate the specification, the maximum reduction is given by the single-shot game reduction from Eq.~(\ref{eq:xclaim_single}) (the orange line in the Figure).
+(ii) Note that the main reason that the single-shot reduction is comparably low since the user has a ``buffer" of 1 unit of BTC that was added to $V_A$.
+If the user is willing to accept a lower buffer, say 0.5, the collateral can be consequently lowered.
+This would still cover the value of the 1 BTC in our example plus a 0.5 potential malicious intend on the vaults side.
+(iii) The user and the service provider can agree to lower the initial collateral $D_I$ in a sequential game setting if they agree on a longer period $m$.
+The collateral reduction, however, is finite: as $m \to \infty$, $\rho$ stabilizes to a constant value.
+
 \begin{figure}[t]
     \centering
     \includegraphics[width=\textwidth]{promise/figures/collateral-reduction.pdf}
-    \caption{Caption}
+    \caption{The possible collateral reduction $\rho$ under the assumption that the vault considers a single round of execution (i.e., a single-shot game) as depicted in the orange line or that the vault considers a sequential game with multiple rounds as depicted in the blue line. The colored areas show in which collateral reduction ranges the vault does not receive an additional incentive to violate the specification as agreed with the user. The more rounds $m$ the game last, the higher the collateral reduction $\rho$ can be under the sequential game scheme. Collateral reductions are constant in case the vault only plays a single-shot game.}
     \label{fig:collateral}
 \end{figure}
 
